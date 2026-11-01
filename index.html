@@ -1,0 +1,1779 @@
+<!DOCTYPE html>
+<html lang="th" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>สื่อการเรียนรู้งานช่างไฟฟ้า: วงจรไฟฟ้าเบื้องต้นและกฎของโอห์ม</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Prompt & Sarabun & JetBrains Mono for Digital Meters -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700;800&family=Prompt:wght@400;500;600;700&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        heading: ['Prompt', 'sans-serif'],
+                        body: ['Sarabun', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        tech: {
+                            dark: '#0f172a',
+                            panel: '#1e293b',
+                            yellow: '#f59e0b',
+                            amber: '#fbbf24',
+                            lcd: '#10b981',
+                            danger: '#ef4444'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background-color: #f1f5f9;
+            color: #0f172a;
+            -webkit-tap-highlight-color: transparent;
+        }
+        h1, h2, h3, h4, .font-heading {
+            font-family: 'Prompt', sans-serif;
+        }
+        /* Industrial Caution Stripe */
+        .caution-stripe {
+            background: repeating-linear-gradient(
+                -45deg,
+                #f59e0b,
+                #f59e0b 12px,
+                #0f172a 12px,
+                #0f172a 24px
+            );
+            height: 6px;
+        }
+        /* Custom Range Slider for Mobile Touch */
+        input[type=range] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 12px;
+            background: #334155;
+            border-radius: 999px;
+            outline: none;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #fbbf24;
+            border: 3px solid #0f172a;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+            transition: transform 0.1s ease;
+        }
+        input[type=range]::-webkit-slider-thumb:active {
+            transform: scale(1.18);
+            background: #f59e0b;
+        }
+        /* Animated Electron Flow */
+        @keyframes flowAnimation {
+            from {
+                stroke-dashoffset: 40;
+            }
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+        .wire-flow {
+            stroke-dasharray: 8 12;
+            animation: flowAnimation var(--flow-duration, 1.5s) linear infinite;
+        }
+        .wire-paused {
+            animation-play-state: paused;
+            opacity: 0.15;
+        }
+        /* LCD Screen Glow */
+        .lcd-box {
+            background: #061814;
+            border: 2px solid #1e293b;
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.7);
+        }
+        /* Hide scrollbar on nav tabs */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col pb-24 md:pb-8">
+
+    <!-- Top Caution Stripe -->
+    <div class="caution-stripe w-full sticky top-0 z-50"></div>
+
+    <!-- Header -->
+    <header class="bg-slate-900 text-white shadow-lg sticky top-[6px] z-40 border-b border-slate-700">
+        <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-11 h-11 rounded-xl bg-amber-500 text-slate-950 flex items-center justify-center font-bold text-xl shadow-md shrink-0">
+                    <i class="fa-solid fa-bolt-lightning"></i>
+                </div>
+                <div>
+                    <div class="flex items-center space-x-2">
+                        <span class="bg-amber-500/20 text-amber-400 border border-amber-500/40 text-xs font-heading px-2 py-0.5 rounded-md font-semibold">
+                            วิชางานช่างไฟฟ้า
+                        </span>
+                        <span class="text-xs text-slate-400 hidden sm:inline">Interactive Learning</span>
+                    </div>
+                    <h1 class="font-heading text-base sm:text-lg font-bold text-white leading-tight mt-0.5">
+                        วงจรไฟฟ้าเบื้องต้นและกฎของโอห์ม
+                    </h1>
+                </div>
+            </div>
+
+            <!-- Progress Indicator -->
+            <div class="text-right">
+                <div class="text-xs text-slate-400 font-heading">ความก้าวหน้า</div>
+                <div class="flex items-center space-x-2 mt-0.5">
+                    <div class="w-20 sm:w-28 bg-slate-700 h-2.5 rounded-full overflow-hidden">
+                        <div id="topProgressBar" class="bg-amber-400 h-full transition-all duration-300" style="width: 20%"></div>
+                    </div>
+                    <span id="topProgressText" class="text-xs font-mono font-bold text-amber-400">1/5</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Desktop / Tablet Horizontal Module Bar -->
+        <nav class="bg-slate-800 border-t border-slate-700 overflow-x-auto no-scrollbar">
+            <div class="max-w-5xl mx-auto px-2 flex space-x-1 py-1.5 min-w-max">
+                <button onclick="switchModule(1)" id="navBtn-1" class="nav-tab px-3.5 py-2 rounded-lg font-heading text-xs sm:text-sm font-medium transition-all flex items-center space-x-2">
+                    <span class="w-5 h-5 rounded-full bg-slate-900/40 flex items-center justify-center text-xs font-bold">1</span>
+                    <span>รู้จัก V, I, R</span>
+                </button>
+                <button onclick="switchModule(2)" id="navBtn-2" class="nav-tab px-3.5 py-2 rounded-lg font-heading text-xs sm:text-sm font-medium transition-all flex items-center space-x-2">
+                    <span class="w-5 h-5 rounded-full bg-slate-900/40 flex items-center justify-center text-xs font-bold">2</span>
+                    <span>แล็บทดลองกฎของโอห์ม</span>
+                </button>
+                <button onclick="switchModule(3)" id="navBtn-3" class="nav-tab px-3.5 py-2 rounded-lg font-heading text-xs sm:text-sm font-medium transition-all flex items-center space-x-2">
+                    <span class="w-5 h-5 rounded-full bg-slate-900/40 flex items-center justify-center text-xs font-bold">3</span>
+                    <span>ความปลอดภัย & ลัดวงจร</span>
+                </button>
+                <button onclick="switchModule(4)" id="navBtn-4" class="nav-tab px-3.5 py-2 rounded-lg font-heading text-xs sm:text-sm font-medium transition-all flex items-center space-x-2">
+                    <span class="w-5 h-5 rounded-full bg-slate-900/40 flex items-center justify-center text-xs font-bold">4</span>
+                    <span>ฝึกคำนวณโจทย์ช่าง</span>
+                </button>
+                <button onclick="switchModule(5)" id="navBtn-5" class="nav-tab px-3.5 py-2 rounded-lg font-heading text-xs sm:text-sm font-medium transition-all flex items-center space-x-2">
+                    <span class="w-5 h-5 rounded-full bg-slate-900/40 flex items-center justify-center text-xs font-bold">5</span>
+                    <span>แบบทดสอบ 10 ข้อ</span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="flex-grow max-w-5xl w-full mx-auto px-4 pt-5 pb-10">
+
+        <!-- Learning Objectives Banner (Collapsible) -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 mb-6 overflow-hidden">
+            <button onclick="toggleObjectiveBanner()" class="w-full px-5 py-3.5 bg-slate-900 text-white flex items-center justify-between text-left">
+                <div class="flex items-center space-x-2.5">
+                    <i class="fa-solid fa-helmet-safety text-amber-400 text-lg"></i>
+                    <span class="font-heading font-semibold text-sm sm:text-base">เป้าหมายการเรียนรู้ประจำบทเรียน (คลิกเพื่อดู/ย่อ)</span>
+                </div>
+                <i id="objChevron" class="fa-solid fa-chevron-up text-amber-400 transition-transform"></i>
+            </button>
+            <div id="objectiveContent" class="p-4 sm:p-5 bg-gradient-to-br from-amber-50/70 to-white text-sm sm:text-base space-y-3 border-t border-slate-200">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-white p-3.5 rounded-xl border border-amber-200 shadow-sm">
+                        <h3 class="font-heading font-bold text-slate-900 flex items-center gap-2 text-sm sm:text-base mb-1">
+                            <i class="fa-solid fa-Lightbulb text-amber-500"></i> สาระสำคัญ
+                        </h3>
+                        <p class="text-slate-700 leading-relaxed text-sm">
+                            วงจรไฟฟ้าเบื้องต้นทำงานภายใต้ความสัมพันธ์เชิงระบบของปริมาณทางไฟฟ้า 3 ประการ ได้แก่ <strong>แรงดันไฟฟ้า (V)</strong> <strong>กระแสไฟฟ้า (I)</strong> และ<strong>ความต้านทานไฟฟ้า (R)</strong> ตามกฎของโอห์ม การวิเคราะห์และคำนวณหาค่าเหล่านี้ช่วยให้ช่างไฟฟ้าประเมินสภาวะการทำงานของอุปกรณ์ และป้องกันอันตรายจากกระแสไฟฟ้าเกินหรือการลัดวงจรได้อย่างปลอดภัย
+                        </p>
+                    </div>
+                    <div class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm">
+                        <h3 class="font-heading font-bold text-slate-900 flex items-center gap-2 text-sm sm:text-base mb-1">
+                            <i class="fa-solid fa-bullseye text-emerald-600"></i> ผลการเรียนรู้ที่คาดหวัง
+                        </h3>
+                        <p class="text-slate-700 leading-relaxed text-sm">
+                            อธิบายความสัมพันธ์ของปริมาณทางไฟฟ้าในวงจรเบื้องต้น และคำนวณหาค่าแรงดันไฟฟ้า กระแสไฟฟ้า และความต้านทานไฟฟ้าตามกฎของโอห์มเพื่อนำไปประยุกต์ใช้ในงานช่างไฟฟ้าได้อย่างถูกต้อง มีทักษะการคิดวิเคราะห์ และมีความรับผิดชอบในการปฏิบัติงานด้วยความปลอดภัย
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==========================================
+             MODULE 1: นิยาม สัญลักษณ์ และหน่วยวัด (V, I, R)
+             ========================================== -->
+        <section id="module-1" class="module-section space-y-6">
+            <div class="bg-white rounded-2xl p-5 sm:p-6 shadow-sm border border-slate-200">
+                <div class="flex items-center space-x-3 mb-4">
+                    <span class="px-3 py-1 bg-amber-500 text-slate-950 font-heading font-bold rounded-lg text-sm">บทที่ 1</span>
+                    <h2 class="font-heading text-xl sm:text-2xl font-bold text-slate-900">รู้จัก 3 ตัวแปรหลักทางไฟฟ้า (V, I, R)</h2>
+                </div>
+                <p class="text-slate-700 text-base leading-relaxed mb-6">
+                    ก่อนที่เราจะซ่อมแซมหรือติดตั้งวงจรไฟฟ้า ช่างไฟฟ้าทุกคนต้องเข้าใจธรรมชาติของไฟฟ้าผ่านตัวแปรสำคัญ 3 ตัว ซึ่งเปรียบเทียบให้เห็นภาพได้ง่ายๆ กับ <strong>"ระบบการไหลของน้ำในท่อ"</strong> ดังนี้ครับ
+                </p>
+
+                <!-- 3 Pillars Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                    <!-- Voltage Card -->
+                    <div class="rounded-2xl border-2 border-amber-400 bg-amber-50/40 p-5 flex flex-col justify-between hover:shadow-md transition">
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="px-3 py-1 rounded-lg bg-amber-500 text-slate-950 font-mono font-extrabold text-lg">V หรือ E</span>
+                                <span class="text-xs font-heading font-semibold bg-amber-100 text-amber-900 px-2.5 py-1 rounded-full">แรงดันไฟฟ้า (Voltage)</span>
+                            </div>
+                            <h3 class="font-heading font-bold text-lg text-slate-900 mb-2">แรงดันไฟฟ้า (ศักย์ไฟฟ้า)</h3>
+                            <p class="text-slate-700 text-sm leading-relaxed mb-4">
+                                คือ <strong>"แรงผลักดัน"</strong> ที่ทำให้อิเล็กตรอนเคลื่อนที่ไปในสายไฟ เปรียบเหมือน <strong>แรงดันจากปั๊มน้ำหรือความสูงของถังเก็บน้ำ</strong> ถ้าแรงดันสูง กระแสไฟฟ้าก็จะถูกผลักให้ไหลได้แรงขึ้น
+                            </p>
+                        </div>
+                        <div class="bg-white p-3 rounded-xl border border-amber-200 text-xs space-y-1">
+                            <div class="flex justify-between"><span class="text-slate-500">หน่วยวัด:</span><span class="font-bold text-slate-900">โวลต์ (Volt : V)</span></div>
+                            <div class="flex justify-between"><span class="text-slate-500">เครื่องมือวัด:</span><span class="font-bold text-amber-700">โวลต์มิเตอร์ (ต่อขนาน)</span></div>
+                            <div class="flex justify-between"><span class="text-slate-500">ตัวอย่างงานช่าง:</span><span class="font-bold text-slate-900">ไฟบ้าน 220V, แบตรถ 12V</span></div>
+                        </div>
+                    </div>
+
+                    <!-- Current Card -->
+                    <div class="rounded-2xl border-2 border-sky-400 bg-sky-50/40 p-5 flex flex-col justify-between hover:shadow-md transition">
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="px-3 py-1 rounded-lg bg-sky-500 text-white font-mono font-extrabold text-lg">I</span>
+                                <span class="text-xs font-heading font-semibold bg-sky-100 text-sky-900 px-2.5 py-1 rounded-full">กระแสไฟฟ้า (Current)</span>
+                            </div>
+                            <h3 class="font-heading font-bold text-lg text-slate-900 mb-2">กระแสไฟฟ้า</h3>
+                            <p class="text-slate-700 text-sm leading-relaxed mb-4">
+                                คือ <strong>"ปริมาณการไหลของอิเล็กตรอน"</strong> ที่วิ่งผ่านจุดใดจุดหนึ่งในสายไฟ เปรียบเหมือน <strong>ปริมาณน้ำที่ไหลผ่านท่อ</strong> เป็นผลลัพธ์ที่เกิดจากแรงดันผลักผ่านความต้านทาน
+                            </p>
+                        </div>
+                        <div class="bg-white p-3 rounded-xl border border-sky-200 text-xs space-y-1">
+                            <div class="flex justify-between"><span class="text-slate-500">หน่วยวัด:</span><span class="font-bold text-slate-900">แอมแปร์ (Ampere : A)</span></div>
+                            <div class="flex justify-between"><span class="text-slate-500">เครื่องมือวัด:</span><span class="font-bold text-sky-700">แอมมิเตอร์ / แคลมป์มิเตอร์</span></div>
+                            <div class="flex justify-between"><span class="text-slate-500">ความสำคัญ:</span><span class="font-bold text-slate-900">ใช้เลือกขนาดสายไฟและเบรกเกอร์</span></div>
+                        </div>
+                    </div>
+
+                    <!-- Resistance Card -->
+                    <div class="rounded-2xl border-2 border-rose-400 bg-rose-50/40 p-5 flex flex-col justify-between hover:shadow-md transition">
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="px-3 py-1 rounded-lg bg-rose-500 text-white font-mono font-extrabold text-lg">R</span>
+                                <span class="text-xs font-heading font-semibold bg-rose-100 text-rose-900 px-2.5 py-1 rounded-full">ความต้านทาน (Resistance)</span>
+                            </div>
+                            <h3 class="font-heading font-bold text-lg text-slate-900 mb-2">ความต้านทานไฟฟ้า</h3>
+                            <p class="text-slate-700 text-sm leading-relaxed mb-4">
+                                คือ <strong>"การต้านหรือจำกัดการไหลของกระแสไฟฟ้า"</strong> ของอุปกรณ์หรือตัวนำ เปรียบเหมือน <strong>รอยคอดของท่อน้ำหรือวาล์วหรี่น้ำ</strong> ยิ่งความต้านทานมาก กระแสจะยิ่งไหลได้น้อยลง
+                            </p>
+                        </div>
+                        <div class="bg-white p-3 rounded-xl border border-rose-200 text-xs space-y-1">
+                            <div class="flex justify-between"><span class="text-slate-500">หน่วยวัด:</span><span class="font-bold text-slate-900">โอห์ม (Ohm : Ω)</span></div>
+                            <div class="flex justify-between"><span class="text-slate-500">เครื่องมือวัด:</span><span class="font-bold text-rose-700">โอห์มมิเตอร์ (ต้องตัดไฟก่อนวัด!)</span></div>
+                            <div class="flex justify-between"><span class="text-slate-500">ตัวอย่าง:</span><span class="font-bold text-slate-900">ขดลวดเตารีด, ไส้หลอดไฟ, ร่างกายคน</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interactive Water Pipe Analogy Simulator -->
+                <div class="bg-slate-900 text-white rounded-2xl p-5 sm:p-6 border border-slate-700">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+                        <div>
+                            <span class="text-xs uppercase tracking-wider text-amber-400 font-heading font-semibold">Interactive Visual</span>
+                            <h3 class="font-heading text-lg sm:text-xl font-bold">จำลองเปรียบเทียบ: ระบบท่อน้ำ vs วงจรไฟฟ้า</h3>
+                        </div>
+                        <span class="text-xs text-slate-300 bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700">
+                            <i class="fa-solid fa-hand-pointer text-amber-400 mr-1"></i> ลองกดปุ่มเพื่อสังเกตการเปลี่ยนแปลง
+                        </span>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+                        <div class="lg:col-span-5 space-y-3">
+                            <p class="text-xs sm:text-sm text-slate-300">เลือกสภาวะการทดลองเปรียบเทียบ:</p>
+                            <button onclick="setAnalogyState('normal')" id="analogyBtn-normal" class="w-full p-3.5 rounded-xl border-2 border-amber-400 bg-slate-800 text-left transition flex items-center justify-between">
+                                <div>
+                                    <div class="font-heading font-bold text-sm text-amber-400">1. สภาวะปกติ (แรงดันปกติ / ท่อขนาดกลาง)</div>
+                                    <div class="text-xs text-slate-300 mt-0.5">น้ำไหลสม่ำเสมอ = กระแสไฟฟ้าไหลผ่านโหลดปกติ</div>
+                                </div>
+                                <i class="fa-solid fa-circle-check text-amber-400"></i>
+                            </button>
+                            <button onclick="setAnalogyState('highV')" id="analogyBtn-highV" class="w-full p-3.5 rounded-xl border border-slate-700 bg-slate-800/60 text-left transition flex items-center justify-between">
+                                <div>
+                                    <div class="font-heading font-bold text-sm text-white">2. เพิ่มแรงดันปั๊มน้ำ (เพิ่ม V / ความต้านทาน R เท่าเดิม)</div>
+                                    <div class="text-xs text-slate-300 mt-0.5">แรงดันสูงขึ้น ดันให้น้ำและกระแสไฟฟ้า (I) ไหลแรงขึ้น</div>
+                                </div>
+                                <i class="fa-solid fa-gauge-high text-sky-400"></i>
+                            </button>
+                            <button onclick="setAnalogyState('highR')" id="analogyBtn-highR" class="w-full p-3.5 rounded-xl border border-slate-700 bg-slate-800/60 text-left transition flex items-center justify-between">
+                                <div>
+                                    <div class="font-heading font-bold text-sm text-white">3. บีบวาล์วท่อให้แคบลง (เพิ่มความต้านทาน R)</div>
+                                    <div class="text-xs text-slate-300 mt-0.5">ทางเดินแคบลง ต้านการไหล ทำให้กระแส (I) ลดน้อยลง</div>
+                                </div>
+                                <i class="fa-solid fa-compress text-rose-400"></i>
+                            </button>
+                        </div>
+
+                        <!-- SVG Water Pipe & Circuit Comparison -->
+                        <div class="lg:col-span-7 bg-slate-950 rounded-xl p-4 border border-slate-800">
+                            <svg viewBox="0 0 500 210" class="w-full h-auto">
+                                <!-- Background Grid -->
+                                <defs>
+                                    <pattern id="smallGrid" width="20" height="20" patternUnits="userSpaceOnUse">
+                                        <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#1e293b" stroke-width="0.7"/>
+                                    </pattern>
+                                </defs>
+                                <rect width="500" height="210" fill="url(#smallGrid)" rx="8"/>
+
+                                <!-- Pump / Voltage Tank -->
+                                <rect x="25" y="35" width="90" height="140" rx="10" fill="#1e293b" stroke="#f59e0b" stroke-width="3"/>
+                                <rect id="analogyTankWater" x="28" y="65" width="84" height="107" rx="6" fill="#0284c7" opacity="0.85"/>
+                                <text x="70" y="25" text-anchor="middle" fill="#fbbf24" font-family="Prompt" font-size="13" font-weight="bold">แรงดัน (V)</text>
+                                <text id="analogyVLabel" x="70" y="120" text-anchor="middle" fill="#ffffff" font-family="JetBrains Mono" font-size="15" font-weight="bold">ปานกลาง</text>
+
+                                <!-- Pipe Structure -->
+                                <path d="M 115 90 L 230 90" stroke="#475569" stroke-width="6" fill="none"/>
+                                <path d="M 115 140 L 230 140" stroke="#475569" stroke-width="6" fill="none"/>
+
+                                <!-- Narrowing Section (Resistance R) -->
+                                <path id="analogyTopWall" d="M 230 90 Q 265 95 300 90 L 450 90" stroke="#475569" stroke-width="6" fill="none"/>
+                                <path id="analogyBotWall" d="M 230 140 Q 265 135 300 140 L 450 140" stroke="#475569" stroke-width="6" fill="none"/>
+
+                                <!-- Valve / Resistor clamp -->
+                                <rect id="analogyValveTop" x="245" y="62" width="40" height="26" rx="4" fill="#f43f5e"/>
+                                <rect id="analogyValveBot" x="245" y="142" width="40" height="26" rx="4" fill="#f43f5e"/>
+                                <text x="265" y="52" text-anchor="middle" fill="#fb7185" font-family="Prompt" font-size="13" font-weight="bold">ความต้านทาน (R)</text>
+
+                                <!-- Water/Current Flow Line -->
+                                <line id="analogyFlowLine" x1="120" y1="115" x2="465" y2="115" stroke="#38bdf8" stroke-width="14" stroke-linecap="round" class="wire-flow" style="--flow-duration: 1.2s;"/>
+
+                                <!-- Output Current Label -->
+                                <text x="415" y="75" text-anchor="middle" fill="#38bdf8" font-family="Prompt" font-size="13" font-weight="bold">กระแสไหล (I)</text>
+                            </svg>
+                            <div id="analogySummaryText" class="mt-3 p-3 rounded-lg bg-slate-900 border border-slate-700 text-xs sm:text-sm text-amber-300 font-heading text-center">
+                                สภาวะปกติ: แรงดัน (V) ปานกลาง ความต้านทาน (R) ปกติ ทำให้กระแสไฟฟ้า (I) ไหลอย่างสม่ำเสมอ
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Summary Reference Table -->
+                <div class="mt-6">
+                    <h3 class="font-heading font-bold text-lg text-slate-900 mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-table-list text-amber-500"></i> ตารางสรุปสัญลักษณ์และหน่วยวัดที่ช่างไฟฟ้าต้องจำให้แม่น
+                    </h3>
+                    <div class="overflow-x-auto rounded-xl border border-slate-200">
+                        <table class="w-full text-left border-collapse text-sm">
+                            <thead>
+                                <tr class="bg-slate-900 text-white font-heading">
+                                    <th class="p-3.5">ปริมาณทางไฟฟ้า</th>
+                                    <th class="p-3.5 text-center">สัญลักษณ์ตัวแปร</th>
+                                    <th class="p-3.5">หน่วยวัด (Unit)</th>
+                                    <th class="p-3.5 text-center">สัญลักษณ์หน่วย</th>
+                                    <th class="p-3.5">ข้อควรระวังในการวัดค่า</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-200 bg-white">
+                                <tr class="hover:bg-amber-50/40">
+                                    <td class="p-3.5 font-bold text-slate-900">แรงดันไฟฟ้า (Voltage)</td>
+                                    <td class="p-3.5 text-center font-mono font-bold text-amber-600 text-base">V หรือ E</td>
+                                    <td class="p-3.5">โวลต์ (Volt)</td>
+                                    <td class="p-3.5 text-center font-mono font-bold">V</td>
+                                    <td class="p-3.5 text-slate-600">ตั้งย่านวัดให้ถูกชนิดไฟ (AC/DC) และต่อสายวัด<strong>ขนาน</strong>กับโหลด</td>
+                                </tr>
+                                <tr class="hover:bg-sky-50/40">
+                                    <td class="p-3.5 font-bold text-slate-900">กระแสไฟฟ้า (Current)</td>
+                                    <td class="p-3.5 text-center font-mono font-bold text-sky-600 text-base">I</td>
+                                    <td class="p-3.5">แอมแปร์ (Ampere)</td>
+                                    <td class="p-3.5 text-center font-mono font-bold">A</td>
+                                    <td class="p-3.5 text-slate-600">ต่อแอมมิเตอร์แบบ<strong>อนุกรม</strong>แทรกในวงจร หรือใช้แคลมป์มิเตอร์คล้องสายไฟเส้นเดียว</td>
+                                </tr>
+                                <tr class="hover:bg-rose-50/40">
+                                    <td class="p-3.5 font-bold text-slate-900">ความต้านทานไฟฟ้า (Resistance)</td>
+                                    <td class="p-3.5 text-center font-mono font-bold text-rose-600 text-base">R</td>
+                                    <td class="p-3.5">โอห์ม (Ohm)</td>
+                                    <td class="p-3.5 text-center font-mono font-bold">Ω</td>
+                                    <td class="p-3.5 text-rose-700 font-semibold">ห้ามวัดขณะมีไฟจ่ายอยู่ในวงจรเด็ดขาด! ต้องปลดแหล่งจ่ายไฟออกก่อนเสมอ</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Next Module Button -->
+                <div class="mt-6 flex justify-end">
+                    <button onclick="switchModule(2)" class="w-full sm:w-auto px-6 py-3.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-heading font-bold rounded-xl shadow-md transition flex items-center justify-center space-x-2">
+                        <span>ไปบทที่ 2: ทดลองแล็บกฎของโอห์ม</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             MODULE 2: ความสัมพันธ์ตามกฎของโอห์ม (Simulator)
+             ========================================== -->
+        <section id="module-2" class="module-section hidden space-y-6">
+            <div class="bg-white rounded-2xl p-5 sm:p-6 shadow-sm border border-slate-200">
+                <div class="flex items-center space-x-3 mb-3">
+                    <span class="px-3 py-1 bg-amber-500 text-slate-950 font-heading font-bold rounded-lg text-sm">บทที่ 2</span>
+                    <h2 class="font-heading text-xl sm:text-2xl font-bold text-slate-900">ความสัมพันธ์ตามกฎของโอห์ม (Ohm's Law Lab)</h2>
+                </div>
+
+                <!-- Principle Highlight Box -->
+                <div class="bg-slate-900 text-white p-4 sm:p-5 rounded-xl mb-6 border-l-4 border-amber-400">
+                    <h3 class="font-heading font-bold text-amber-400 text-base sm:text-lg mb-1">
+                        <i class="fa-solid fa-book-open mr-1.5"></i> ทฤษฎีกฎของโอห์ม (George Simon Ohm)
+                    </h3>
+                    <p class="text-slate-200 text-sm sm:text-base leading-relaxed">
+                        "เมื่ออุณหภูมิคงที่ <strong>กระแสไฟฟ้า (I)</strong> ที่ไหลในวงจร จะ<strong>แปรผันตรง</strong>กับแรงดันไฟฟ้า (V) และ<strong>แปรผกผัน</strong>กับความต้านทานไฟฟ้า (R)"
+                    </p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3 text-xs sm:text-sm">
+                        <div class="bg-slate-800 p-3 rounded-lg border border-slate-700">
+                            <span class="text-emerald-400 font-bold">แปรผันตรง ($I \propto V$):</span> ถ้าความต้านทานคงที่ เมื่อเพิ่มแรงดัน $V$ สูงขึ้น กระแส $I$ จะเพิ่มขึ้นตาม
+                        </div>
+                        <div class="bg-slate-800 p-3 rounded-lg border border-slate-700">
+                            <span class="text-rose-400 font-bold">แปรผกผัน ($I \propto \frac{1}{R}$):</span> ถ้าแรงดันคงที่ เมื่อเพิ่มความต้านทาน $R$ สูงขึ้น กระแส $I$ จะลดน้อยลง
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interactive Ohm's Law Lab Simulator -->
+                <div class="bg-slate-950 rounded-2xl p-4 sm:p-6 text-white border-2 border-slate-800 shadow-xl mb-8">
+                    <div class="flex flex-wrap items-center justify-between gap-2 pb-4 mb-5 border-b border-slate-800">
+                        <div class="flex items-center space-x-2">
+                            <span class="w-3 h-3 rounded-full bg-emerald-400 animate-pulse"></span>
+                            <h3 class="font-heading font-bold text-base sm:text-lg text-amber-400">
+                                ชุดฝึกจำลองวงจรไฟฟ้าและดิจิทัลมัลติมิเตอร์
+                            </h3>
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            <button onclick="setLabPreset(12, 6)" class="text-xs font-heading bg-slate-800 hover:bg-slate-700 text-sky-300 border border-sky-500/40 px-3 py-1.5 rounded-lg transition">
+                                <i class="fa-solid fa-car-battery mr-1"></i> แบตเตอรี่ 12V (6Ω)
+                            </button>
+                            <button onclick="setLabPreset(220, 44)" class="text-xs font-heading bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/50 px-3 py-1.5 rounded-lg transition font-semibold">
+                                <i class="fa-solid fa-plug mr-1"></i> ไฟบ้าน 220V (44Ω)
+                            </button>
+                            <button onclick="setLabPreset(220, 10)" class="text-xs font-heading bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/50 px-3 py-1.5 rounded-lg transition">
+                                <i class="fa-solid fa-fire mr-1"></i> โหลดหนัก 220V (10Ω)
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Digital Multimeter Readouts -->
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+                        <div class="lcd-box p-3.5 rounded-xl">
+                            <div class="text-xs text-slate-400 font-heading flex justify-between">
+                                <span>แรงดันไฟฟ้า (V)</span>
+                                <span class="text-amber-400 font-mono">VOLT</span>
+                            </div>
+                            <div class="font-mono text-2xl sm:text-3xl font-extrabold text-amber-400 mt-1">
+                                <span id="lcdV">220</span> <span class="text-base font-normal">V</span>
+                            </div>
+                        </div>
+
+                        <div class="lcd-box p-3.5 rounded-xl">
+                            <div class="text-xs text-slate-400 font-heading flex justify-between">
+                                <span>ความต้านทาน (R)</span>
+                                <span class="text-rose-400 font-mono">OHM</span>
+                            </div>
+                            <div class="font-mono text-2xl sm:text-3xl font-extrabold text-rose-400 mt-1">
+                                <span id="lcdR">44</span> <span class="text-base font-normal">Ω</span>
+                            </div>
+                        </div>
+
+                        <div class="lcd-box p-3.5 rounded-xl border-emerald-500/50">
+                            <div class="text-xs text-slate-400 font-heading flex justify-between">
+                                <span>กระแสไหลจริง (I)</span>
+                                <span class="text-emerald-400 font-mono">AMP</span>
+                            </div>
+                            <div class="font-mono text-2xl sm:text-3xl font-extrabold text-emerald-400 mt-1">
+                                <span id="lcdI">5.00</span> <span class="text-base font-normal">A</span>
+                            </div>
+                        </div>
+
+                        <div class="lcd-box p-3.5 rounded-xl">
+                            <div class="text-xs text-slate-400 font-heading flex justify-between">
+                                <span>กำลังไฟฟ้า (P=V×I)</span>
+                                <span class="text-sky-400 font-mono">WATT</span>
+                            </div>
+                            <div class="font-mono text-2xl sm:text-3xl font-extrabold text-sky-400 mt-1">
+                                <span id="lcdP">1100</span> <span class="text-base font-normal">W</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Interactive SVG Schematic Diagram -->
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+                        <div class="lg:col-span-7 bg-slate-900 rounded-xl p-3 sm:p-4 border border-slate-800 relative">
+                            <svg viewBox="0 0 520 260" class="w-full h-auto">
+                                <!-- Outer Circuit Wire Track -->
+                                <rect x="70" y="45" width="380" height="170" rx="14" fill="none" stroke="#334155" stroke-width="8"/>
+
+                                <!-- Animated Current Flow Electrons -->
+                                <rect id="labCurrentLoop" x="70" y="45" width="380" height="170" rx="14" fill="none" stroke="#38bdf8" stroke-width="5" class="wire-flow" style="--flow-duration: 0.9s;"/>
+
+                                <!-- Power Supply Source (Left) -->
+                                <rect x="30" y="90" width="80" height="80" rx="12" fill="#0f172a" stroke="#f59e0b" stroke-width="3"/>
+                                <text x="70" y="118" text-anchor="middle" fill="#94a3b8" font-family="Prompt" font-size="11">แหล่งจ่ายไฟ</text>
+                                <text id="svgSourceText" x="70" y="142" text-anchor="middle" fill="#fbbf24" font-family="JetBrains Mono" font-weight="bold" font-size="16">220V</text>
+                                <text x="70" y="80" text-anchor="middle" fill="#ef4444" font-family="JetBrains Mono" font-weight="bold" font-size="14">+ / L</text>
+                                <text x="70" y="190" text-anchor="middle" fill="#38bdf8" font-family="JetBrains Mono" font-weight="bold" font-size="14">- / N</text>
+
+                                <!-- Ammeter on Top Wire (Series) -->
+                                <circle cx="260" cy="45" r="28" fill="#0f172a" stroke="#10b981" stroke-width="3"/>
+                                <text x="260" y="41" text-anchor="middle" fill="#10b981" font-family="JetBrains Mono" font-weight="bold" font-size="14">A</text>
+                                <text id="svgAmmeterText" x="260" y="57" text-anchor="middle" fill="#ffffff" font-family="JetBrains Mono" font-size="11">5.00A</text>
+
+                                <!-- Load / Lamp & Resistor (Right) -->
+                                <circle id="svgLampGlow" cx="450" cy="130" r="46" fill="#fbbf24" opacity="0.35"/>
+                                <rect x="410" y="85" width="80" height="90" rx="12" fill="#0f172a" stroke="#f43f5e" stroke-width="3"/>
+                                <!-- Zigzag resistor icon inside load -->
+                                <path d="M 430 120 L 437 110 L 444 130 L 451 110 L 458 130 L 465 110 L 470 120" fill="none" stroke="#fb7185" stroke-width="3"/>
+                                <text x="450" y="148" text-anchor="middle" fill="#cbd5e1" font-family="Prompt" font-size="11">โหลด R</text>
+                                <text id="svgResistorText" x="450" y="165" text-anchor="middle" fill="#fb7185" font-family="JetBrains Mono" font-weight="bold" font-size="14">44 Ω</text>
+
+                                <!-- Formula Live Substitution inside circuit center -->
+                                <rect x="145" y="100" width="215" height="75" rx="10" fill="#1e293b" stroke="#475569" stroke-width="1.5"/>
+                                <text x="252" y="122" text-anchor="middle" fill="#94a3b8" font-family="Prompt" font-size="12">สมการคำนวณกระแสไฟฟ้าขณะนี้</text>
+                                <text id="svgFormulaLive" x="252" y="152" text-anchor="middle" fill="#38bdf8" font-family="JetBrains Mono" font-weight="bold" font-size="15">I = 220V ÷ 44Ω = 5.00A</text>
+                            </svg>
+
+                            <!-- Status Alert Bar under circuit -->
+                            <div id="labStatusBanner" class="mt-2 px-3.5 py-2 rounded-lg bg-emerald-950/80 border border-emerald-500/40 text-emerald-300 text-xs sm:text-sm flex items-center justify-between">
+                                <span><i class="fa-solid fa-shield-halved mr-1.5"></i> <strong>สถานะวงจร:</strong> ทำงานปกติ (กระแสไม่เกินพิกัดสายไฟ 15A)</span>
+                                <span id="labFlowSpeedLabel" class="font-mono text-xs">การไหล: ปกติ</span>
+                            </div>
+                        </div>
+
+                        <!-- Touch Sliders Control Panel -->
+                        <div class="lg:col-span-5 space-y-5 bg-slate-900 p-4 sm:p-5 rounded-xl border border-slate-800">
+                            <!-- Voltage Slider -->
+                            <div>
+                                <div class="flex justify-between items-center mb-2">
+                                    <label for="sliderV" class="font-heading font-bold text-sm sm:text-base text-amber-400">
+                                        1. ปรับแรงดันไฟฟ้า (V)
+                                    </label>
+                                    <span class="bg-amber-500/20 text-amber-300 border border-amber-500/40 font-mono font-bold px-2.5 py-0.5 rounded text-sm">
+                                        <span id="sliderVVal">220</span> V
+                                    </span>
+                                </div>
+                                <input type="range" id="sliderV" min="0" max="240" step="1" value="220" oninput="updateOhmLab()">
+                                <div class="flex justify-between text-[11px] text-slate-400 font-mono mt-1">
+                                    <span>0V (ตัดไฟ)</span>
+                                    <span>110V</span>
+                                    <span>220V (ไฟบ้าน)</span>
+                                    <span>240V</span>
+                                </div>
+                            </div>
+
+                            <!-- Resistance Slider -->
+                            <div>
+                                <div class="flex justify-between items-center mb-2">
+                                    <label for="sliderR" class="font-heading font-bold text-sm sm:text-base text-rose-400">
+                                        2. ปรับความต้านทานโหลด (R)
+                                    </label>
+                                    <span class="bg-rose-500/20 text-rose-300 border border-rose-500/40 font-mono font-bold px-2.5 py-0.5 rounded text-sm">
+                                        <span id="sliderRVal">44</span> Ω
+                                    </span>
+                                </div>
+                                <input type="range" id="sliderR" min="2" max="220" step="1" value="44" oninput="updateOhmLab()">
+                                <div class="flex justify-between text-[11px] text-slate-400 font-mono mt-1">
+                                    <span>2Ω (ต้านทานต่ำมาก)</span>
+                                    <span>110Ω</span>
+                                    <span>220Ω (ต้านทานสูง)</span>
+                                </div>
+                            </div>
+
+                            <!-- Observation Hint for Student -->
+                            <div class="p-3.5 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-300 leading-relaxed space-y-1.5">
+                                <div class="font-heading font-bold text-amber-400">
+                                    <i class="fa-solid fa-magnifying-glass-chart mr-1"></i> จุดสังเกตสำหรับช่างไฟฟ้า:
+                                </div>
+                                <p>• ลองตั้งแรงดันที่ <strong>220V</strong> แล้วค่อยๆ <strong>ลดความต้านทาน R ลงต่ำกว่า 10 Ω</strong> สังเกตว่ากระแส (I) จะพุ่งสูงขึ้นอย่างรวดเร็วจนเกิดสภาวะโหลดเกินพิกัด!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interactive Magic Triangle V-I-R -->
+                <div class="bg-slate-50 rounded-2xl p-5 border border-slate-200">
+                    <h3 class="font-heading font-bold text-lg sm:text-xl text-slate-900 mb-2">
+                        <i class="fa-solid fa-caret-up text-amber-500 mr-1"></i> สามเหลี่ยมกฎของโอห์ม (แตะตัวแปรที่ต้องการหาค่า)
+                    </h3>
+                    <p class="text-slate-600 text-sm mb-5">
+                        เทคนิคช่วยจำสูตรโดยไม่ต้องท่องสับสน: <strong>"เอานิ้วปิดตัวแปรที่ต้องการหา แล้วดูความสัมพันธ์ของ 2 ตัวที่เหลือ"</strong> ลองแตะที่ตัวอักษร V, I หรือ R ในรูปสามเหลี่ยมด้านล่างได้เลยครับ
+                    </p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+                        <!-- Clickable SVG Triangle -->
+                        <div class="md:col-span-5 flex justify-center">
+                            <svg viewBox="0 0 260 230" class="w-64 h-auto select-none">
+                                <!-- Triangle Base Shadow -->
+                                <polygon points="130,15 15,215 245,215" fill="#1e293b" stroke="#0f172a" stroke-width="6" stroke-linejoin="round"/>
+                                <!-- Top Section (V) -->
+                                <g onclick="selectTriangleFormula('V')" class="cursor-pointer hover:opacity-90 transition">
+                                    <polygon id="triPolyV" points="130,20 73,118 187,118" fill="#f59e0b"/>
+                                    <text x="130" y="95" text-anchor="middle" fill="#0f172a" font-family="JetBrains Mono" font-weight="800" font-size="36">V</text>
+                                </g>
+                                <!-- Bottom Left Section (I) -->
+                                <g onclick="selectTriangleFormula('I')" class="cursor-pointer hover:opacity-90 transition">
+                                    <polygon id="triPolyI" points="70,124 22,208 127,208 127,124" fill="#334155"/>
+                                    <text id="triTextI" x="78" y="182" text-anchor="middle" fill="#38bdf8" font-family="JetBrains Mono" font-weight="800" font-size="34">I</text>
+                                </g>
+                                <!-- Bottom Right Section (R) -->
+                                <g onclick="selectTriangleFormula('R')" class="cursor-pointer hover:opacity-90 transition">
+                                    <polygon id="triPolyR" points="133,124 133,208 238,208 190,124" fill="#334155"/>
+                                    <text id="triTextR" x="182" y="182" text-anchor="middle" fill="#fb7185" font-family="JetBrains Mono" font-weight="800" font-size="34">R</text>
+                                </g>
+                                <!-- Divider Symbols -->
+                                <text x="130" y="128" text-anchor="middle" fill="#ffffff" font-family="JetBrains Mono" font-weight="bold" font-size="14">÷ (หาร)</text>
+                                <text x="130" y="175" text-anchor="middle" fill="#ffffff" font-family="JetBrains Mono" font-weight="bold" font-size="18">×</text>
+                            </svg>
+                        </div>
+
+                        <!-- Formula Explanation Card -->
+                        <div class="md:col-span-7 space-y-3">
+                            <div class="flex space-x-2">
+                                <button onclick="selectTriangleFormula('V')" id="triBtn-V" class="flex-1 py-2.5 px-3 rounded-xl font-heading font-bold text-sm bg-amber-500 text-slate-950 shadow">
+                                    หาแรงดัน (V)
+                                </button>
+                                <button onclick="selectTriangleFormula('I')" id="triBtn-I" class="flex-1 py-2.5 px-3 rounded-xl font-heading font-bold text-sm bg-slate-200 text-slate-700">
+                                    หากระแส (I)
+                                </button>
+                                <button onclick="selectTriangleFormula('R')" id="triBtn-R" class="flex-1 py-2.5 px-3 rounded-xl font-heading font-bold text-sm bg-slate-200 text-slate-700">
+                                    หาความต้านทาน (R)
+                                </button>
+                            </div>
+
+                            <div id="triangleFormulaDisplay" class="bg-slate-900 text-white p-5 rounded-2xl border border-slate-700">
+                                <div class="text-xs text-amber-400 font-heading uppercase">สูตรการคำนวณที่เลือก</div>
+                                <div class="text-3xl sm:text-4xl font-mono font-extrabold text-amber-400 my-2">
+                                    V = I × R
+                                </div>
+                                <p class="text-slate-200 text-sm sm:text-base leading-relaxed">
+                                    <strong>วิธีจำ:</strong> เมื่อต้องการหา <strong>แรงดันไฟฟ้า (V)</strong> ซึ่งอยู่ด้านบนสุด ให้เอาตัวแปรคู่ล่างคือ <strong>กระแส (I) คูณกับ ความต้านทาน (R)</strong>
+                                </p>
+                                <div class="mt-3 pt-3 border-t border-slate-800 text-xs text-slate-300 font-mono">
+                                    ตัวอย่าง: มีกระแสไหล 5 A ผ่านตัวต้านทาน 44 Ω จะต้องใช้แรงดัน V = 5 × 44 = 220 V
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation Buttons -->
+                <div class="mt-6 flex flex-col sm:flex-row justify-between gap-3">
+                    <button onclick="switchModule(1)" class="px-5 py-3 bg-slate-200 hover:bg-slate-300 text-slate-800 font-heading font-semibold rounded-xl transition flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        <span>ย้อนกลับบทที่ 1</span>
+                    </button>
+                    <button onclick="switchModule(3)" class="px-6 py-3.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-heading font-bold rounded-xl shadow-md transition flex items-center justify-center space-x-2">
+                        <span>ไปบทที่ 3: ความปลอดภัย & ไฟฟ้าลัดวงจร</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             MODULE 3: การประยุกต์ใช้และความปลอดภัยในงานช่างไฟฟ้า
+             ========================================== -->
+        <section id="module-3" class="module-section hidden space-y-6">
+            <div class="bg-white rounded-2xl p-5 sm:p-6 shadow-sm border border-slate-200">
+                <div class="flex items-center space-x-3 mb-3">
+                    <span class="px-3 py-1 bg-amber-500 text-slate-950 font-heading font-bold rounded-lg text-sm">บทที่ 3</span>
+                    <h2 class="font-heading text-xl sm:text-2xl font-bold text-slate-900">กฎของโอห์มกับความปลอดภัยในงานช่างไฟฟ้า</h2>
+                </div>
+                <p class="text-slate-700 text-base leading-relaxed mb-6">
+                    ทำไมช่างไฟฟ้าต้องคำนวณกฎของโอห์ม? เพราะในระบบไฟฟ้าบ้านพักอาศัยของประเทศไทย <strong>แรงดันไฟฟ้า (V) จะคงที่อยู่ที่ 220 V</strong> เสมอ ดังนั้นปริมาณกระแสไฟฟ้า (I) ที่จะไหลมากหรือน้อย จึงขึ้นอยู่กับ <strong>ความต้านทาน (R)</strong> เป็นหลัก!
+                </p>
+
+                <!-- Interactive Technician Safety Scenario Simulator -->
+                <div class="bg-slate-900 text-white rounded-2xl p-5 sm:p-6 border border-slate-700 mb-8">
+                    <div class="flex items-center justify-between flex-wrap gap-2 mb-4">
+                        <div>
+                            <span class="text-xs font-heading uppercase tracking-wider text-amber-400">Safety Simulation</span>
+                            <h3 class="font-heading text-lg sm:text-xl font-bold">จำลอง 3 สถานการณ์จริงในระบบไฟบ้าน 220V (พิกัดเบรกเกอร์ 15A)</h3>
+                        </div>
+                    </div>
+
+                    <!-- Scenario Selector Buttons -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
+                        <button onclick="setSafetyCase(1)" id="safeBtn-1" class="p-4 rounded-xl border-2 border-emerald-400 bg-slate-800 text-left transition">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="text-xs font-mono bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded">CASE 1</span>
+                                <i class="fa-solid fa-circle-check text-emerald-400"></i>
+                            </div>
+                            <div class="font-heading font-bold text-base text-white">1. ใช้งานปกติ</div>
+                            <div class="text-xs text-slate-300 mt-1">เสียบเตารีด 1 เครื่อง ($R = 44\ \Omega$)</div>
+                        </button>
+
+                        <button onclick="setSafetyCase(2)" id="safeBtn-2" class="p-4 rounded-xl border border-slate-700 bg-slate-800/60 text-left transition">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="text-xs font-mono bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded">CASE 2</span>
+                                <i class="fa-solid fa-triangle-exclamation text-amber-400"></i>
+                            </div>
+                            <div class="font-heading font-bold text-base text-white">2. โหลดเกินพิกัด (Overload)</div>
+                            <div class="text-xs text-slate-300 mt-1">พ่วงปลั๊กหลายชิ้นจน $R$ รวมลดเหลือ $10\ \Omega$</div>
+                        </button>
+
+                        <button onclick="setSafetyCase(3)" id="safeBtn-3" class="p-4 rounded-xl border border-slate-700 bg-slate-800/60 text-left transition">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="text-xs font-mono bg-rose-500/20 text-rose-300 px-2 py-0.5 rounded">CASE 3</span>
+                                <i class="fa-solid fa-skull-crossbones text-rose-500"></i>
+                            </div>
+                            <div class="font-heading font-bold text-base text-white">3. ไฟฟ้าลัดวงจร (Short Circuit)</div>
+                            <div class="text-xs text-slate-300 mt-1">สาย L และ N เปลือยแตะกัน ($R = 0.5\ \Omega$)</div>
+                        </button>
+                    </div>
+
+                    <!-- Scenario Result Panel -->
+                    <div id="safetyResultPanel" class="bg-slate-950 rounded-xl p-5 border border-emerald-500/40">
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-5 items-center">
+                            <div class="md:col-span-5 space-y-2 border-b md:border-b-0 md:border-r border-slate-800 pb-4 md:pb-0 md:pr-4">
+                                <div class="text-xs text-slate-400 font-heading">ผลการคำนวณตามกฎของโอห์ม:</div>
+                                <div id="safeCalcFormula" class="font-mono text-xl sm:text-2xl font-extrabold text-emerald-400">
+                                    I = 220V ÷ 44Ω = 5.0 A
+                                </div>
+                                <div class="flex items-center space-x-2 pt-1">
+                                    <span class="text-xs text-slate-400">สถานะเซอร์กิตเบรกเกอร์ (15A):</span>
+                                    <span id="safeBreakerBadge" class="px-2.5 py-0.5 rounded-full text-xs font-heading font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
+                                        ON (จ่ายไฟปกติ)
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="md:col-span-7 space-y-2">
+                                <h4 id="safeCaseTitle" class="font-heading font-bold text-base sm:text-lg text-emerald-400">
+                                    สภาวะปกติ: สายไฟและอุปกรณ์ทำงานได้อย่างปลอดภัย
+                                </h4>
+                                <p id="safeCaseDesc" class="text-slate-300 text-sm leading-relaxed">
+                                    ตัวต้านทานความร้อนในเตารีดมีค่า 44 Ω ช่วยจำกัดกระแสไฟฟ้าไว้ที่ 5 A ซึ่งต่ำกว่าพิกัดของสายไฟและเบรกเกอร์ (15 A) จึงใช้งานได้อย่างปลอดภัย สายไฟไม่ร้อนผิดปกติ
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Real-world Body Resistance Case (Dry vs Wet Hand) -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div class="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+                        <div class="flex items-center space-x-2.5 mb-3">
+                            <div class="w-10 h-10 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center text-lg font-bold">
+                                <i class="fa-solid fa-hand-sparkles"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-heading font-bold text-slate-900 text-base">ทำไมห้ามแตะปลั๊กไฟขณะตัวเปียก?</h3>
+                                <p class="text-xs text-slate-500">วิเคราะห์ด้วยสมการ $I = V \div R$</p>
+                            </div>
+                        </div>
+                        <p class="text-sm text-slate-700 leading-relaxed mb-3">
+                            ร่างกายมนุษย์มีความต้านทานไฟฟ้า (R) หากผิวหนังแห้งอาจมีความต้านทานสูงถึง <strong>100,000 Ω</strong> แต่เมื่อ<strong>มือเปียกน้ำ</strong> ความต้านทานร่างกายจะลดฮวบลงเหลือเพียง <strong>1,000 Ω</strong>!
+                        </p>
+                        <div class="bg-white p-3.5 rounded-xl border border-slate-200 space-y-2 text-xs font-mono">
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-600 font-body">เมื่อมือแห้ง ($R = 100,000\ \Omega$):</span>
+                                <span class="font-bold text-emerald-700">I = 220 ÷ 100,000 = 0.0022 A (2.2 mA)</span>
+                            </div>
+                            <div class="flex justify-between items-center pt-1 border-t border-slate-100">
+                                <span class="text-rose-600 font-body font-bold">เมื่อมือเปียก ($R = 1,000\ \Omega$):</span>
+                                <span class="font-bold text-rose-600">I = 220 ÷ 1,000 = 0.22 A (220 mA - อันตรายถึงชีวิต!)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+                        <div class="flex items-center space-x-2.5 mb-3">
+                            <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center text-lg font-bold">
+                                <i class="fa-solid fa-screwdriver-wrench"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-heading font-bold text-slate-900 text-base">หลักการเลือกฟิวส์และเบรกเกอร์</h3>
+                                <p class="text-xs text-slate-500">ความรับผิดชอบของช่างไฟฟ้ามืออาชีพ</p>
+                            </div>
+                        </div>
+                        <p class="text-sm text-slate-700 leading-relaxed mb-3">
+                            ช่างไฟฟ้าต้องคำนวณหากระแส (I) ของเครื่องใช้ไฟฟ้าก่อนเสมอ แล้วเลือกขนาดฟิวส์หรือเบรกเกอร์ให้<strong>สูงกว่ากระแสใช้งานปกติเล็กน้อย (ประมาณ 125%)</strong> แต่ต้อง<strong>ไม่เกินพิกัดการทนกระแสของสายไฟ</strong>
+                        </p>
+                        <ul class="text-xs text-slate-700 space-y-1.5 bg-white p-3.5 rounded-xl border border-slate-200">
+                            <li><i class="fa-solid fa-check text-emerald-600 mr-1.5"></i> <strong>ห้ามใช้สายทองแดงหรือลวดแทนฟิวส์:</strong> เพราะมีค่า R ต่ำมาก ทำให้กระแสลัดวงจรไหลผ่านโดยไม่ตัดไฟ จนเกิดเพลิงไหม้</li>
+                            <li><i class="fa-solid fa-check text-emerald-600 mr-1.5"></i> <strong>ตรวจจุดต่อสายไฟให้แน่น:</strong> จุดต่อที่หลวมจะเกิดความต้านทานสะสมและเกิดความร้อนสูง</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Navigation Buttons -->
+                <div class="mt-6 flex flex-col sm:flex-row justify-between gap-3">
+                    <button onclick="switchModule(2)" class="px-5 py-3 bg-slate-200 hover:bg-slate-300 text-slate-800 font-heading font-semibold rounded-xl transition flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        <span>ย้อนกลับบทที่ 2</span>
+                    </button>
+                    <button onclick="switchModule(4)" class="px-6 py-3.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-heading font-bold rounded-xl shadow-md transition flex items-center justify-center space-x-2">
+                        <span>ไปบทที่ 4: ฝึกคำนวณและวิเคราะห์โจทย์ช่าง</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             MODULE 4: ฝึกคำนวณและวิเคราะห์โจทย์งานช่าง
+             ========================================== -->
+        <section id="module-4" class="module-section hidden space-y-6">
+            <div class="bg-white rounded-2xl p-5 sm:p-6 shadow-sm border border-slate-200">
+                <div class="flex items-center space-x-3 mb-3">
+                    <span class="px-3 py-1 bg-amber-500 text-slate-950 font-heading font-bold rounded-lg text-sm">บทที่ 4</span>
+                    <h2 class="font-heading text-xl sm:text-2xl font-bold text-slate-900">ฝึกคำนวณและวิเคราะห์โจทย์งานช่างไฟฟ้า</h2>
+                </div>
+                <p class="text-slate-700 text-base leading-relaxed mb-6">
+                    ฝึกใช้เครื่องมือช่วยวิเคราะห์ขั้นตอนการแทนค่าตามกฎของโอห์ม และลองทำโจทย์สถานการณ์จำลองงานช่าง 3 ข้อก่อนเข้าสู่แบบทดสอบจริงครับ
+                </p>
+
+                <!-- Step-by-Step Interactive Calculator -->
+                <div class="bg-slate-900 text-white rounded-2xl p-5 sm:p-6 border border-slate-700 mb-8">
+                    <h3 class="font-heading font-bold text-lg text-amber-400 mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-calculator"></i> เครื่องคิดเลขแสดงวิธีทำตามกฎของโอห์ม (Step-by-Step Solver)
+                    </h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+                        <div class="md:col-span-6 space-y-4">
+                            <div>
+                                <label class="block text-xs text-slate-300 font-heading mb-2">1. เลือกตัวแปรที่โจทย์ต้องการทราบค่า:</label>
+                                <div class="grid grid-cols-3 gap-2">
+                                    <button onclick="setSolverMode('I')" id="solverMode-I" class="py-2.5 px-3 rounded-xl font-heading font-bold text-xs sm:text-sm bg-amber-500 text-slate-950">
+                                        หากระแส (I)
+                                    </button>
+                                    <button onclick="setSolverMode('V')" id="solverMode-V" class="py-2.5 px-3 rounded-xl font-heading font-bold text-xs sm:text-sm bg-slate-800 text-slate-300 border border-slate-700">
+                                        หาแรงดัน (V)
+                                    </button>
+                                    <button onclick="setSolverMode('R')" id="solverMode-R" class="py-2.5 px-3 rounded-xl font-heading font-bold text-xs sm:text-sm bg-slate-800 text-slate-300 border border-slate-700">
+                                        หาต้านทาน (R)
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Dynamic Inputs -->
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label id="solverInput1Label" class="block text-xs text-amber-300 font-heading mb-1">ป้อนค่าแรงดันไฟฟ้า V (โวลต์):</label>
+                                    <input type="number" id="solverInput1" value="220" min="0" step="any" oninput="runSolverCalculation()" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white font-mono text-lg focus:border-amber-400 outline-none">
+                                </div>
+                                <div>
+                                    <label id="solverInput2Label" class="block text-xs text-rose-300 font-heading mb-1">ป้อนค่าความต้านทาน R (โอห์ม):</label>
+                                    <input type="number" id="solverInput2" value="55" min="0.01" step="any" oninput="runSolverCalculation()" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white font-mono text-lg focus:border-amber-400 outline-none">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step-by-Step Solution Box -->
+                        <div class="md:col-span-6 bg-slate-950 rounded-xl p-4 border border-slate-800 flex flex-col justify-center">
+                            <div class="text-xs text-slate-400 font-heading mb-2">แสดงวิธีทำตามลำดับขั้น:</div>
+                            <div id="solverStepsOutput" class="space-y-1.5 font-mono text-sm">
+                                <!-- Populated via JS -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3 Guided Practice Scenarios -->
+                <h3 class="font-heading font-bold text-lg text-slate-900 mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-clipboard-question text-amber-500"></i> โจทย์ฝึกซ้อมวิเคราะห์งานช่าง (ลองคิดคำตอบแล้วกดดูเฉลย)
+                </h3>
+
+                <div class="space-y-4">
+                    <!-- Practice 1 -->
+                    <div class="p-4 sm:p-5 rounded-2xl border border-slate-200 bg-slate-50">
+                        <div class="flex items-start justify-between gap-2">
+                            <div>
+                                <span class="text-xs font-heading font-bold bg-amber-100 text-amber-800 px-2.5 py-0.5 rounded-md">โจทย์ฝึกซ้อมที่ 1: หาค่ากระแสไฟฟ้า (I)</span>
+                                <p class="text-slate-900 font-semibold text-base mt-2">
+                                    เครื่องทำน้ำอุ่นเครื่องหนึ่งมีขดลวดทำความร้อนที่มีความต้านทาน $11\ \Omega$ เมื่อนำไปต่อเข้ากับไฟบ้านแรงดัน $220\text{ V}$ จะมีกระแสไฟฟ้าไหลผ่านกี่แอมแปร์ และควรใช้เบรกเกอร์ขนาด $15\text{ A}$ หรือ $30\text{ A}$?
+                                </p>
+                            </div>
+                        </div>
+                        <button onclick="toggleSolution('sol-1')" class="mt-3 px-4 py-2 rounded-lg bg-slate-900 text-amber-400 font-heading text-xs sm:text-sm font-semibold hover:bg-slate-800 transition">
+                            <i class="fa-solid fa-eye mr-1"></i> แสดง/ซ่อน วิธีทำและแนวคิดช่าง
+                        </button>
+                        <div id="sol-1" class="hidden mt-3 p-4 rounded-xl bg-white border border-amber-300 text-sm space-y-1.5">
+                            <div><strong>1. สิ่งที่โจทย์กำหนด:</strong> $V = 220\text{ V}$, $R = 11\ \Omega$</div>
+                            <div><strong>2. เลือกสูตร:</strong> $I = \frac{V}{R}$</div>
+                            <div><strong>3. แทนค่าคำนวณ:</strong> $I = \frac{220}{11} = \mathbf{20\text{ A}}$</div>
+                            <div class="text-emerald-700 font-semibold pt-1"><strong>4. การนำไปใช้งานช่าง:</strong> กระแสไหลถึง $20\text{ A}$ ดังนั้นหากใช้เบรกเกอร์ $15\text{ A}$ เบรกเกอร์จะตัดทันที ต้องเลือกใช้เบรกเกอร์ขนาด <strong>$30\text{ A}$</strong> (หรือ $25\text{ A}$) พร้อมสายไฟขนาดที่รองรับได้</div>
+                        </div>
+                    </div>
+
+                    <!-- Practice 2 -->
+                    <div class="p-4 sm:p-5 rounded-2xl border border-slate-200 bg-slate-50">
+                        <div>
+                            <span class="text-xs font-heading font-bold bg-sky-100 text-sky-800 px-2.5 py-0.5 rounded-md">โจทย์ฝึกซ้อมที่ 2: หาค่าแรงดันไฟฟ้า (V)</span>
+                            <p class="text-slate-900 font-semibold text-base mt-2">
+                                ช่างไฟฟ้าใช้แคลมป์มิเตอร์วัดกระแสไฟฟ้าที่ไหลผ่านหลอดไฟสปอตไลท์ได้ $2.5\text{ A}$ โดยทราบว่าหลอดไฟนี้มีความต้านทานขณะทำงาน $88\ \Omega$ อยากทราบว่าแหล่งจ่ายไฟที่จ่ายให้สปอตไลท์ดวงนี้มีแรงดันไฟฟ้ากี่โวลต์?
+                            </p>
+                        </div>
+                        <button onclick="toggleSolution('sol-2')" class="mt-3 px-4 py-2 rounded-lg bg-slate-900 text-amber-400 font-heading text-xs sm:text-sm font-semibold hover:bg-slate-800 transition">
+                            <i class="fa-solid fa-eye mr-1"></i> แสดง/ซ่อน วิธีทำและแนวคิดช่าง
+                        </button>
+                        <div id="sol-2" class="hidden mt-3 p-4 rounded-xl bg-white border border-sky-300 text-sm space-y-1.5">
+                            <div><strong>1. สิ่งที่โจทย์กำหนด:</strong> $I = 2.5\text{ A}$, $R = 88\ \Omega$</div>
+                            <div><strong>2. เลือกสูตร:</strong> $V = I \times R$</div>
+                            <div><strong>3. แทนค่าคำนวณ:</strong> $V = 2.5 \times 88 = \mathbf{220\text{ V}}$</div>
+                            <div class="text-sky-700 font-semibold pt-1"><strong>4. สรุปผล:</strong> แหล่งจ่ายไฟคือระบบไฟบ้านมาตรฐาน $220\text{ V}$</div>
+                        </div>
+                    </div>
+
+                    <!-- Practice 3 -->
+                    <div class="p-4 sm:p-5 rounded-2xl border border-slate-200 bg-slate-50">
+                        <div>
+                            <span class="text-xs font-heading font-bold bg-rose-100 text-rose-800 px-2.5 py-0.5 rounded-md">โจทย์ฝึกซ้อมที่ 3: หาค่าความต้านทาน (R)</span>
+                            <p class="text-slate-900 font-semibold text-base mt-2">
+                                มอเตอร์พัดลมระบายอากาศทำงานด้วยไฟแบตเตอรี่ $24\text{ V}$ และกินกระแสไฟฟ้า $4\text{ A}$ ขดลวดของมอเตอร์ตัวนี้มีความต้านทานไฟฟ้ากี่โอห์ม?
+                            </p>
+                        </div>
+                        <button onclick="toggleSolution('sol-3')" class="mt-3 px-4 py-2 rounded-lg bg-slate-900 text-amber-400 font-heading text-xs sm:text-sm font-semibold hover:bg-slate-800 transition">
+                            <i class="fa-solid fa-eye mr-1"></i> แสดง/ซ่อน วิธีทำและแนวคิดช่าง
+                        </button>
+                        <div id="sol-3" class="hidden mt-3 p-4 rounded-xl bg-white border border-rose-300 text-sm space-y-1.5">
+                            <div><strong>1. สิ่งที่โจทย์กำหนด:</strong> $V = 24\text{ V}$, $I = 4\text{ A}$</div>
+                            <div><strong>2. เลือกสูตร:</strong> $R = \frac{V}{I}$</div>
+                            <div><strong>3. แทนค่าคำนวณ:</strong> $R = \frac{24}{4} = \mathbf{6\ \Omega}$</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation Buttons -->
+                <div class="mt-6 flex flex-col sm:flex-row justify-between gap-3">
+                    <button onclick="switchModule(3)" class="px-5 py-3 bg-slate-200 hover:bg-slate-300 text-slate-800 font-heading font-semibold rounded-xl transition flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        <span>ย้อนกลับบทที่ 3</span>
+                    </button>
+                    <button onclick="switchModule(5)" class="px-6 py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white font-heading font-bold rounded-xl shadow-md transition flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-clipboard-check"></i>
+                        <span>ไปบทที่ 5: ทำแบบทดสอบทบทวนความรู้ 10 ข้อ</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             MODULE 5: แบบทดสอบทบทวนความรู้ 10 ข้อ
+             ========================================== -->
+        <section id="module-5" class="module-section hidden space-y-6">
+            <div class="bg-white rounded-2xl p-5 sm:p-6 shadow-sm border border-slate-200">
+                <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-3 py-1 bg-amber-500 text-slate-950 font-heading font-bold rounded-lg text-sm">บทที่ 5</span>
+                        <h2 class="font-heading text-xl sm:text-2xl font-bold text-slate-900">แบบทดสอบทบทวนความรู้ (10 ข้อ)</h2>
+                    </div>
+                    <span class="text-xs font-heading bg-slate-100 text-slate-700 px-3 py-1.5 rounded-lg border border-slate-200">
+                        เกณฑ์ผ่านมาตรฐานช่าง: <strong>7 / 10 คะแนน (70%)</strong>
+                    </span>
+                </div>
+
+                <!-- Student Information Input (For Teacher Submission) -->
+                <div class="bg-slate-900 text-white p-4 sm:p-5 rounded-2xl mb-6 border border-slate-700">
+                    <h3 class="font-heading font-bold text-sm sm:text-base text-amber-400 mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-id-card"></i> ข้อมูลผู้เรียน (สำหรับออกใบสรุปผลคะแนนส่งครู)
+                    </h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-12 gap-3">
+                        <div class="sm:col-span-6">
+                            <label class="block text-xs text-slate-300 mb-1">ชื่อ - นามสกุล นักเรียน</label>
+                            <input type="text" id="studentName" placeholder="เช่น นายสมชาย สายฟ้า" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-sm focus:border-amber-400 outline-none">
+                        </div>
+                        <div class="sm:col-span-3">
+                            <label class="block text-xs text-slate-300 mb-1">ชั้น / ห้อง</label>
+                            <input type="text" id="studentClass" placeholder="เช่น ม.4/1 หรือ ปวช.1" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-sm focus:border-amber-400 outline-none">
+                        </div>
+                        <div class="sm:col-span-3">
+                            <label class="block text-xs text-slate-300 mb-1">เลขที่</label>
+                            <input type="text" id="studentNo" placeholder="เช่น 12" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-sm focus:border-amber-400 outline-none">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quiz Status Tracker -->
+                <div class="flex items-center justify-between bg-amber-50 border border-amber-200 px-4 py-3 rounded-xl mb-5">
+                    <span class="text-sm font-heading font-semibold text-slate-800">
+                        ตอบแล้ว <span id="quizAnsweredCount" class="text-amber-600 font-bold">0</span> / 10 ข้อ
+                    </span>
+                    <button onclick="resetQuiz()" class="text-xs font-heading text-rose-600 hover:underline font-semibold">
+                        <i class="fa-solid fa-rotate-right mr-1"></i> เริ่มทำใหม่ทั้งหมด
+                    </button>
+                </div>
+
+                <!-- Quiz Questions Container -->
+                <div id="quizContainer" class="space-y-5">
+                    <!-- Rendered dynamically by JavaScript -->
+                </div>
+
+                <!-- Submit Quiz Button -->
+                <div id="quizActionWarning" class="hidden mt-4 p-3.5 rounded-xl bg-rose-50 border border-rose-300 text-rose-700 text-sm font-heading text-center">
+                    กรุณาเลือกคำตอบให้ครบทั้ง 10 ข้อก่อนส่งตรวจคำตอบครับ
+                </div>
+
+                <div class="mt-6">
+                    <button id="submitQuizBtn" onclick="submitQuiz()" class="w-full py-4 bg-amber-500 hover:bg-amber-400 text-slate-950 font-heading font-bold text-base sm:text-lg rounded-2xl shadow-lg transition flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-paper-plane"></i>
+                        <span>ตรวจคำตอบและออกใบสรุปผลคะแนน</span>
+                    </button>
+                </div>
+
+                <!-- Final Score Certificate Card (Hidden until submitted) -->
+                <div id="quizResultCard" class="hidden mt-8 bg-slate-900 text-white rounded-2xl p-6 border-2 border-amber-400 shadow-2xl">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-700 pb-4 mb-5">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-12 h-12 rounded-2xl bg-amber-400 text-slate-950 flex items-center justify-center text-2xl font-bold">
+                                <i class="fa-solid fa-award"></i>
+                            </div>
+                            <div>
+                                <div class="text-xs font-mono uppercase tracking-wider text-amber-400">Official Assessment Result</div>
+                                <h3 class="font-heading text-xl font-bold">ใบรายงานผลการทดสอบวิชางานช่างไฟฟ้า</h3>
+                            </div>
+                        </div>
+                        <span id="certBadge" class="px-3.5 py-1.5 rounded-full text-xs font-heading font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-400">
+                            ผ่านเกณฑ์มาตรฐานช่าง
+                        </span>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+                        <div class="md:col-span-7 space-y-2.5 bg-slate-950 p-4 rounded-xl border border-slate-800 text-sm">
+                            <div class="flex justify-between border-b border-slate-800 pb-2">
+                                <span class="text-slate-400">ชื่อ-นามสกุล:</span>
+                                <span id="certName" class="font-heading font-bold text-amber-300">-</span>
+                            </div>
+                            <div class="flex justify-between border-b border-slate-800 pb-2">
+                                <span class="text-slate-400">ชั้น/ห้อง - เลขที่:</span>
+                                <span id="certClassNo" class="font-heading font-semibold text-white">-</span>
+                            </div>
+                            <div class="flex justify-between border-b border-slate-800 pb-2">
+                                <span class="text-slate-400">หน่วยการเรียนรู้:</span>
+                                <span class="font-heading text-white">วงจรไฟฟ้าเบื้องต้นและกฎของโอห์ม</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-400">วันที่-เวลาส่งผล:</span>
+                                <span id="certTimestamp" class="font-mono text-xs text-slate-300">-</span>
+                            </div>
+                        </div>
+
+                        <div class="md:col-span-5 text-center bg-slate-950 p-5 rounded-xl border border-slate-800">
+                            <div class="text-xs text-slate-400 font-heading">คะแนนที่ทำได้</div>
+                            <div class="font-mono text-5xl font-extrabold text-amber-400 my-1">
+                                <span id="certScore">0</span><span class="text-2xl text-slate-500">/10</span>
+                            </div>
+                            <div id="certFeedbackText" class="text-xs text-emerald-400 font-heading mt-1">
+                                ยอดเยี่ยม! เข้าใจทฤษฎีและการนำไปใช้จริงได้ดีมาก
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-5 flex flex-col sm:flex-row gap-3 justify-between items-center pt-4 border-t border-slate-800">
+                        <p class="text-xs text-slate-400">
+                            <i class="fa-solid fa-camera text-amber-400 mr-1"></i> นักเรียนสามารถแคปหน้าจอใบสรุปผลนี้ หรือกดคัดลอกข้อความเพื่อส่งงานครูได้ทันที
+                        </p>
+                        <div class="flex gap-2 w-full sm:w-auto">
+                            <button onclick="copyResultSummary()" class="flex-1 sm:flex-initial px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-amber-300 border border-amber-500/40 rounded-xl font-heading text-xs font-bold transition">
+                                <i class="fa-solid fa-copy mr-1"></i> คัดลอกผลคะแนน
+                            </button>
+                            <button onclick="resetQuiz()" class="flex-1 sm:flex-initial px-4 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-xl font-heading text-xs font-bold transition">
+                                <i class="fa-solid fa-rotate-right mr-1"></i> สอบแก้ตัวอีกครั้ง
+                            </button>
+                        </div>
+                    </div>
+                    <div id="copyToast" class="hidden mt-3 text-center text-xs font-heading text-emerald-400 bg-emerald-950/70 py-1.5 rounded-lg border border-emerald-500/40">
+                        คัดลอกข้อความสรุปผลคะแนนเรียบร้อยแล้ว! นำไปวางส่งครูในแชทหรือระบบส่งงานได้เลย
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Sticky Mobile Bottom Navigation Bar -->
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-slate-900 border-t border-slate-700 z-50 px-2 py-1.5 shadow-2xl">
+        <div class="grid grid-cols-5 gap-1">
+            <button onclick="switchModule(1)" id="mobNav-1" class="flex flex-col items-center justify-center py-1.5 rounded-lg text-amber-400">
+                <i class="fa-solid fa-bolt text-base"></i>
+                <span class="text-[10px] font-heading mt-0.5">1. V,I,R</span>
+            </button>
+            <button onclick="switchModule(2)" id="mobNav-2" class="flex flex-col items-center justify-center py-1.5 rounded-lg text-slate-400">
+                <i class="fa-solid fa-sliders text-base"></i>
+                <span class="text-[10px] font-heading mt-0.5">2. แล็บ</span>
+            </button>
+            <button onclick="switchModule(3)" id="mobNav-3" class="flex flex-col items-center justify-center py-1.5 rounded-lg text-slate-400">
+                <i class="fa-solid fa-shield-halved text-base"></i>
+                <span class="text-[10px] font-heading mt-0.5">3. ปลอดภัย</span>
+            </button>
+            <button onclick="switchModule(4)" id="mobNav-4" class="flex flex-col items-center justify-center py-1.5 rounded-lg text-slate-400">
+                <i class="fa-solid fa-calculator text-base"></i>
+                <span class="text-[10px] font-heading mt-0.5">4. โจทย์ช่าง</span>
+            </button>
+            <button onclick="switchModule(5)" id="mobNav-5" class="flex flex-col items-center justify-center py-1.5 rounded-lg text-slate-400">
+                <i class="fa-solid fa-list-check text-base"></i>
+                <span class="text-[10px] font-heading mt-0.5">5. ทดสอบ</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // ==========================================
+        // STATE MANAGEMENT & NAVIGATION
+        // ==========================================
+        let currentModule = 1;
+        let currentSolverMode = 'I';
+        let userAnswers = {};
+        let isQuizSubmitted = false;
+
+        // 10 Comprehensive Vocational Electrician Questions
+        const quizQuestions = [
+            {
+                id: 1,
+                category: "นิยามและหน่วยวัด (K)",
+                question: "ข้อใดจับคู่ 'ปริมาณทางไฟฟ้า' กับ 'หน่วยวัด' ได้ถูกต้องทั้งหมดตามมาตรฐานงานช่างไฟฟ้า?",
+                options: [
+                    "แรงดันไฟฟ้า (แอมแปร์), กระแสไฟฟ้า (โวลต์), ความต้านทาน (โอห์ม)",
+                    "แรงดันไฟฟ้า (โวลต์), กระแสไฟฟ้า (แอมแปร์), ความต้านทาน (โอห์ม)",
+                    "แรงดันไฟฟ้า (โอห์ม), กระแสไฟฟ้า (แอมแปร์), ความต้านทาน (วัตต์)",
+                    "แรงดันไฟฟ้า (โวลต์), กระแสไฟฟ้า (วัตต์), ความต้านทาน (แอมแปร์)"
+                ],
+                correct: 1,
+                explanation: "แรงดันไฟฟ้า (V) มีหน่วยเป็น โวลต์ (Volt), กระแสไฟฟ้า (I) มีหน่วยเป็น แอมแปร์ (Ampere), และความต้านทานไฟฟ้า (R) มีหน่วยเป็น โอห์ม (Ohm : Ω)"
+            },
+            {
+                id: 2,
+                category: "เครื่องมือวัดและนิยาม (K)",
+                question: "หากเปรียบเทียบวงจรไฟฟ้าเหมือนระบบท่อน้ำ 'ความต้านทานไฟฟ้า (R)' เปรียบได้กับสิ่งใด และมีผลต่อกระแสไฟฟ้าอย่างไร?",
+                options: [
+                    "เปรียบเหมือนปั๊มน้ำ ยิ่งมีค่ามากยิ่งผลักดันให้กระแสไหลแรงขึ้น",
+                    "เปรียบเหมือนปริมาณน้ำที่ไหลออกจากปลายท่อใน 1 วินาที",
+                    "เปรียบเหมือนรอยคอดของท่อหรือวาล์วหรี่น้ำ ยิ่งมีค่ามาก กระแสไฟฟ้าจะยิ่งไหลได้น้อยลง",
+                    "เปรียบเหมือนความยาวของสายยางที่ไม่มีผลต่อการไหลของน้ำ"
+                ],
+                correct: 2,
+                explanation: "ความต้านทานไฟฟ้า (R) ทำหน้าที่ต้านหรือจำกัดการไหลของกระแสไฟฟ้า เปรียบเหมือนรอยคอดของท่อน้ำ หากค่า R สูงขึ้น กระแสไฟฟ้า (I) จะไหลได้น้อยลง"
+            },
+            {
+                id: 3,
+                category: "ความสัมพันธ์ตามกฎของโอห์ม (K)",
+                question: "ตามกฎของโอห์ม (I = V / R) ถ้าระบบไฟฟ้ามีแรงดันไฟฟ้า (V) คงที่ แต่ความต้านทานของโหลด (R) ลดต่ำลงครึ่งหนึ่ง กระแสไฟฟ้า (I) ในวงจรจะเป็นอย่างไร?",
+                options: [
+                    "กระแสไฟฟ้าจะลดลงครึ่งหนึ่ง",
+                    "กระแสไฟฟ้าจะเพิ่มขึ้นเป็น 2 เท่า",
+                    "กระแสไฟฟ้ายังคงเท่าเดิมเพราะแรงดันคงที่",
+                    "กระแสไฟฟ้าจะหยุดไหลทันที"
+                ],
+                correct: 1,
+                explanation: "กระแสไฟฟ้า (I) แปรผกผันกับความต้านทาน (R) เมื่อแรงดันคงที่แต่ความต้านทานลดลงครึ่งหนึ่ง กระแสไฟฟ้าจึงไหลเพิ่มขึ้นเป็น 2 เท่า"
+            },
+            {
+                id: 4,
+                category: "การคำนวณหาค่ากระแสไฟฟ้า (P)",
+                question: "เตาอบไฟฟ้าเครื่องหนึ่งมีความต้านทานของขดลวดความร้อน 22 โอห์ม (Ω) เมื่อนำไปเสียบใช้งานกับไฟบ้านแรงดัน 220 โวลต์ (V) จะมีกระแสไฟฟ้าไหลผ่านกี่แอมแปร์?",
+                options: [
+                    "0.1 แอมแปร์",
+                    "5 แอมแปร์",
+                    "10 แอมแปร์",
+                    "242 แอมแปร์"
+                ],
+                correct: 2,
+                explanation: "จากสูตร I = V ÷ R แทนค่า I = 220 V ÷ 22 Ω = 10 แอมแปร์ (A)"
+            },
+            {
+                id: 5,
+                category: "การคำนวณหาค่าแรงดันไฟฟ้า (P)",
+                question: "หลอดไฟฉุกเฉินในโรงงานมีความต้านทาน 8 โอห์ม (Ω) ขณะทำงานมีกระแสไฟฟ้าไหลผ่าน 3 แอมแปร์ (A) แบตเตอรี่ของไฟฉุกเฉินชุดนี้จ่ายแรงดันไฟฟ้ากี่โวลต์?",
+                options: [
+                    "2.67 โวลต์",
+                    "11 โวลต์",
+                    "24 โวลต์",
+                    "32 โวลต์"
+                ],
+                correct: 2,
+                explanation: "จากสูตร V = I × R แทนค่า V = 3 A × 8 Ω = 24 โวลต์ (V)"
+            },
+            {
+                id: 6,
+                category: "การคำนวณหาค่าความต้านทาน (P)",
+                question: "ช่างไฟฟ้าวัดแรงดันไฟบ้านได้ 220 โวลต์ (V) และใช้แคลมป์มิเตอร์วัดกระแสที่ไหลเข้ากาต้มน้ำไฟฟ้าได้ 5.5 แอมแปร์ (A) ขดลวดกาต้มน้ำนี้มีความต้านทานกี่โอห์ม?",
+                options: [
+                    "20 โอห์ม",
+                    "40 โอห์ม",
+                    "110 โอห์ม",
+                    "1,210 โอห์ม"
+                ],
+                correct: 1,
+                explanation: "จากสูตร R = V ÷ I แทนค่า R = 220 V ÷ 5.5 A = 40 โอห์ม (Ω)"
+            },
+            {
+                id: 7,
+                category: "ความปลอดภัยและไฟฟ้าลัดวงจร (K/A)",
+                question: "เพราะเหตุใดเมื่อเกิด 'ไฟฟ้าลัดวงจร' (สาย L และ N แตะกันโดยตรงโดยไม่ผ่านโหลด) จึงเกิดกระแสไฟฟ้าพุ่งสูงมหาศาลจนสายไฟไหม้หากเบรกเกอร์ไม่ตัด?",
+                options: [
+                    "เพราะแรงดันไฟฟ้าของโรงไฟฟ้าพุ่งสูงขึ้นเป็นพันโวลต์",
+                    "เพราะความต้านทาน (R) ณ จุดลัดวงจรลดต่ำลงใกล้ศูนย์ เมื่อหารตามสูตร I = V/R กระแส (I) จึงพุ่งสูงมาก",
+                    "เพราะความต้านทานของสายไฟเพิ่มขึ้นอย่างรวดเร็วเมื่อสายแตะกัน",
+                    "เพราะกระแสไฟฟ้าไหลย้อนกลับเข้ามิเตอร์การไฟฟ้า"
+                ],
+                correct: 1,
+                explanation: "เมื่อสายไฟแตะกันโดยตรงโดยไม่ผ่านโหลด ความต้านทาน (R) จะต่ำมาก (เช่น 0.5 Ω หรือน้อยกว่า) เมื่อแรงดัน 220V ถูกหารด้วยค่า R ที่ต่ำมาก กระแส (I) จึงพุ่งสูงเป็นหลายร้อยแอมแปร์ทันที"
+            },
+            {
+                id: 8,
+                category: "การวิเคราะห์งานช่างจริง (P)",
+                question: "วงจรเต้ารับในห้องครัวใช้สายไฟและเซอร์กิตเบรกเกอร์พิกัด 15 แอมแปร์ (ที่ไฟบ้าน 220V) หากเสียบใช้งานเครื่องใช้ไฟฟ้าพร้อมกันจนความต้านทานรวมของวงจรลดเหลือ 10 โอห์ม จะเกิดผลอย่างไร?",
+                options: [
+                    "ใช้งานได้ปกติ เพราะกระแสไหลเพียง 10 แอมแปร์",
+                    "เกิดสภาวะโหลดเกินพิกัด (Overload) เพราะกระแสไหลถึง 22 แอมแปร์ ทำให้เบรกเกอร์ 15A ทริปตัดวงจร",
+                    "เครื่องใช้ไฟฟ้าจะทำงานช้าลงเพราะกระแสไม่พอ",
+                    "แรงดันไฟบ้านจะลดลงเหลือ 150 โวลต์โดยอัตโนมัติ"
+                ],
+                correct: 1,
+                explanation: "คำนวณกระแส I = V ÷ R = 220V ÷ 10Ω = 22 A ซึ่งเกินพิกัดเบรกเกอร์ 15A เรียกว่าสภาวะโหลดเกินพิกัด (Overload) เบรกเกอร์จึงต้องตัดไฟเพื่อป้องกันสายไฟไหม้"
+            },
+            {
+                id: 9,
+                category: "ความปลอดภัยในการปฏิบัติงาน (A)",
+                question: "การใช้กฎของโอห์มอธิบายอันตรายของการสัมผัสอุปกรณ์ไฟฟ้าขณะที่ 'มือเปียกน้ำ' ข้อใดถูกต้องตามหลักวิชาการมากที่สุด?",
+                options: [
+                    "น้ำทำให้แรงดันไฟฟ้า 220V เพิ่มขึ้นเป็น 440V",
+                    "ความเปียกชื้นทำให้ความต้านทานของผิวหนัง (R) ลดต่ำลงมาก กระแสไฟฟ้า (I) จึงไหลผ่านหัวใจและร่างกายได้มากขึ้นจนเป็นอันตรายถึงชีวิต",
+                    "น้ำทำให้ความต้านทานร่างกายสูงขึ้นจนเกิดความร้อนที่ฝ่ามือ",
+                    "น้ำไม่มีผลต่อความต้านทานแต่ทำให้เบรกเกอร์ไม่ตัด"
+                ],
+                correct: 1,
+                explanation: "เมื่อผิวหนังเปียกน้ำ ค่าความต้านทานร่างกาย (R) จะลดลงอย่างมาก ตามสมการ I = V/R เมื่อ R ลดลง กระแสไฟฟ้า (I) ที่ไหลผ่านร่างกายจึงพุ่งสูงขึ้นจนเป็นอันตรายถึงชีวิต"
+            },
+            {
+                id: 10,
+                category: "ทักษะการปฏิบัติงานและความปลอดภัย (P/A)",
+                question: "หากช่างไฟฟ้าต้องการใช้มัลติมิเตอร์วัดค่า 'ความต้านทาน (R)' ของขดลวดมอเตอร์ จะต้องปฏิบัติตามข้อใดเป็นอันดับแรกเพื่อความปลอดภัยและความถูกต้อง?",
+                options: [
+                    "เปิดสวิตช์เดินเครื่องมอเตอร์ให้หมุนเต็มที่ก่อนวัด",
+                    "ตั้งย่านวัดไปที่แอมแปร์ (A) แล้วเสียบปลั๊กไฟ",
+                    "ตัดกระแสไฟฟ้าและปลดแหล่งจ่ายไฟออกจากวงจรมอเตอร์ก่อนทำการวัดทุกครั้ง",
+                    "ใช้มือจับปลายสายวัดโลหะทั้งสองข้างไว้แน่นๆ ขณะอ่านค่า"
+                ],
+                correct: 2,
+                explanation: "การวัดความต้านทาน (โอห์มมิเตอร์) ห้ามวัดขณะที่มีไฟจ่ายอยู่ในวงจรเด็ดขาด เพราะจะทำให้มิเตอร์เสียหายและเป็นอันตรายต่อผู้วัด ต้องตัดไฟก่อนเสมอ"
+            }
+        ];
+
+        // Switch Module Function
+        function switchModule(modNum) {
+            currentModule = modNum;
+            // Hide all sections
+            document.querySelectorAll('.module-section').forEach(sec => sec.classList.add('hidden'));
+            // Show active section
+            document.getElementById(`module-${modNum}`).classList.remove('hidden');
+
+            // Update Progress Bar
+            const percent = modNum * 20;
+            document.getElementById('topProgressBar').style.width = `${percent}%`;
+            document.getElementById('topProgressText').textContent = `${modNum}/5`;
+
+            // Update Top Nav Buttons
+            for (let i = 1; i <= 5; i++) {
+                const btn = document.getElementById(`navBtn-${i}`);
+                const mobBtn = document.getElementById(`mobNav-${i}`);
+                if (i === modNum) {
+                    btn.className = "nav-tab px-3.5 py-2 rounded-lg font-heading text-xs sm:text-sm font-bold transition-all flex items-center space-x-2 bg-amber-500 text-slate-950 shadow";
+                    mobBtn.className = "flex flex-col items-center justify-center py-1.5 rounded-lg text-amber-400 bg-slate-800 font-bold";
+                } else {
+                    btn.className = "nav-tab px-3.5 py-2 rounded-lg font-heading text-xs sm:text-sm font-medium transition-all flex items-center space-x-2 text-slate-300 hover:bg-slate-700";
+                    mobBtn.className = "flex flex-col items-center justify-center py-1.5 rounded-lg text-slate-400";
+                }
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Toggle Objective Banner
+        function toggleObjectiveBanner() {
+            const content = document.getElementById('objectiveContent');
+            const chevron = document.getElementById('objChevron');
+            content.classList.toggle('hidden');
+            chevron.classList.toggle('rotate-180');
+        }
+
+        // ==========================================
+        // MODULE 1: WATER ANALOGY INTERACTION
+        // ==========================================
+        function setAnalogyState(state) {
+            const states = ['normal', 'highV', 'highR'];
+            states.forEach(s => {
+                const btn = document.getElementById(`analogyBtn-${s}`);
+                if (s === state) {
+                    btn.className = "w-full p-3.5 rounded-xl border-2 border-amber-400 bg-slate-800 text-left transition flex items-center justify-between";
+                } else {
+                    btn.className = "w-full p-3.5 rounded-xl border border-slate-700 bg-slate-800/60 text-left transition flex items-center justify-between";
+                }
+            });
+
+            const tankWater = document.getElementById('analogyTankWater');
+            const vLabel = document.getElementById('analogyVLabel');
+            const topWall = document.getElementById('analogyTopWall');
+            const botWall = document.getElementById('analogyBotWall');
+            const valveTop = document.getElementById('analogyValveTop');
+            const valveBot = document.getElementById('analogyValveBot');
+            const flowLine = document.getElementById('analogyFlowLine');
+            const summary = document.getElementById('analogySummaryText');
+
+            if (state === 'normal') {
+                tankWater.setAttribute('y', '65');
+                tankWater.setAttribute('height', '107');
+                vLabel.textContent = "ปานกลาง";
+                topWall.setAttribute('d', 'M 230 90 Q 265 95 300 90 L 450 90');
+                botWall.setAttribute('d', 'M 230 140 Q 265 135 300 140 L 450 140');
+                valveTop.setAttribute('y', '62');
+                valveBot.setAttribute('y', '142');
+                flowLine.setAttribute('stroke-width', '14');
+                flowLine.style.setProperty('--flow-duration', '1.2s');
+                summary.textContent = "สภาวะปกติ: แรงดัน (V) ปานกลาง ความต้านทาน (R) ปกติ ทำให้กระแสไฟฟ้า (I) ไหลอย่างสม่ำเสมอ";
+            } else if (state === 'highV') {
+                tankWater.setAttribute('y', '42');
+                tankWater.setAttribute('height', '130');
+                vLabel.textContent = "แรงดันสูง!";
+                topWall.setAttribute('d', 'M 230 90 Q 265 95 300 90 L 450 90');
+                botWall.setAttribute('d', 'M 230 140 Q 265 135 300 140 L 450 140');
+                valveTop.setAttribute('y', '62');
+                valveBot.setAttribute('y', '142');
+                flowLine.setAttribute('stroke-width', '20');
+                flowLine.style.setProperty('--flow-duration', '0.45s');
+                summary.textContent = "เมื่อเพิ่มแรงดัน (V สูงขึ้น) โดยที่ขนาดท่อ (R) เท่าเดิม แรงผลักจะดันให้กระแสไฟฟ้า (I) ไหลแรงและเร็วขึ้น (แปรผันตรง)";
+            } else if (state === 'highR') {
+                tankWater.setAttribute('y', '65');
+                tankWater.setAttribute('height', '107');
+                vLabel.textContent = "ปานกลาง";
+                topWall.setAttribute('d', 'M 230 90 Q 265 110 300 90 L 450 90');
+                botWall.setAttribute('d', 'M 230 140 Q 265 120 300 140 L 450 140');
+                valveTop.setAttribute('y', '72');
+                valveBot.setAttribute('y', '132');
+                flowLine.setAttribute('stroke-width', '6');
+                flowLine.style.setProperty('--flow-duration', '2.5s');
+                summary.textContent = "เมื่อเพิ่มความต้านทาน (R สูงขึ้น/ท่อแคบลง) จะต้านทานการไหล ทำให้กระแสไฟฟ้า (I) ไหลผ่านได้น้อยลง (แปรผกผัน)";
+            }
+        }
+
+        // ==========================================
+        // MODULE 2: OHM'S LAW INTERACTIVE SIMULATOR
+        // ==========================================
+        function setLabPreset(v, r) {
+            document.getElementById('sliderV').value = v;
+            document.getElementById('sliderR').value = r;
+            updateOhmLab();
+        }
+
+        function updateOhmLab() {
+            const V = parseFloat(document.getElementById('sliderV').value);
+            const R = parseFloat(document.getElementById('sliderR').value);
+            const I = V / R;
+            const P = V * I;
+
+            // Update Labels & Digital LCD
+            document.getElementById('sliderVVal').textContent = V;
+            document.getElementById('sliderRVal').textContent = R;
+            document.getElementById('lcdV').textContent = V;
+            document.getElementById('lcdR').textContent = R;
+            document.getElementById('lcdI').textContent = I.toFixed(2);
+            document.getElementById('lcdP').textContent = Math.round(P);
+
+            // Update SVG Circuit Diagram Texts
+            document.getElementById('svgSourceText').textContent = `${V}V`;
+            document.getElementById('svgResistorText').textContent = `${R} Ω`;
+            document.getElementById('svgAmmeterText').textContent = `${I.toFixed(2)}A`;
+            document.getElementById('svgFormulaLive').textContent = `I = ${V}V ÷ ${R}Ω = ${I.toFixed(2)}A`;
+
+            // Update Electron Flow Animation & Lamp Glow
+            const loop = document.getElementById('labCurrentLoop');
+            const glow = document.getElementById('svgLampGlow');
+            const banner = document.getElementById('labStatusBanner');
+            const speedLabel = document.getElementById('labFlowSpeedLabel');
+
+            if (I <= 0.01) {
+                loop.classList.add('wire-paused');
+                glow.setAttribute('opacity', '0');
+                banner.className = "mt-2 px-3.5 py-2 rounded-lg bg-slate-800 border border-slate-700 text-slate-300 text-xs sm:text-sm flex items-center justify-between";
+                banner.innerHTML = `<span><i class="fa-solid fa-power-off mr-1.5"></i> <strong>สถานะวงจร:</strong> ไม่มีแรงดันไฟฟ้า กระแสจึงเป็น 0 A</span><span class="font-mono text-xs">หยุดไหล</span>`;
+            } else {
+                loop.classList.remove('wire-paused');
+                // Map Current (0.1A to 30A+) to animation duration (2.5s down to 0.18s)
+                const duration = Math.max(0.18, Math.min(2.5, 4.5 / (I + 0.5)));
+                loop.style.setProperty('--flow-duration', `${duration.toFixed(2)}s`);
+
+                // Lamp glow opacity
+                const glowOpacity = Math.min(0.95, 0.15 + (I / 15));
+                glow.setAttribute('opacity', glowOpacity.toFixed(2));
+
+                if (I > 15) {
+                    loop.setAttribute('stroke', '#ef4444');
+                    glow.setAttribute('fill', '#ef4444');
+                    banner.className = "mt-2 px-3.5 py-2 rounded-lg bg-rose-950/90 border border-rose-500 text-rose-300 text-xs sm:text-sm flex items-center justify-between";
+                    banner.innerHTML = `<span><i class="fa-solid fa-triangle-exclamation mr-1.5"></i> <strong>เตือนภัยช่าง!</strong> กระแส ${I.toFixed(2)}A เกินพิกัดเบรกเกอร์ 15A (Overload / เสี่ยงสายไฟไหม้!)</span><span class="font-mono text-xs font-bold">กระแสสูงอันตราย!</span>`;
+                } else {
+                    loop.setAttribute('stroke', '#38bdf8');
+                    glow.setAttribute('fill', '#fbbf24');
+                    banner.className = "mt-2 px-3.5 py-2 rounded-lg bg-emerald-950/80 border border-emerald-500/40 text-emerald-300 text-xs sm:text-sm flex items-center justify-between";
+                    banner.innerHTML = `<span><i class="fa-solid fa-shield-halved mr-1.5"></i> <strong>สถานะวงจร:</strong> ทำงานปกติ (${I.toFixed(2)}A อยู่ในเกณฑ์ปลอดภัย)</span><span class="font-mono text-xs">การไหล: ปกติ</span>`;
+                }
+            }
+        }
+
+        // Triangle Formula Selector
+        function selectTriangleFormula(target) {
+            const targets = ['V', 'I', 'R'];
+            targets.forEach(t => {
+                const btn = document.getElementById(`triBtn-${t}`);
+                if (t === target) {
+                    btn.className = "flex-1 py-2.5 px-3 rounded-xl font-heading font-bold text-sm bg-amber-500 text-slate-950 shadow";
+                } else {
+                    btn.className = "flex-1 py-2.5 px-3 rounded-xl font-heading font-bold text-sm bg-slate-200 text-slate-700";
+                }
+            });
+
+            // Highlight SVG polygon
+            document.getElementById('triPolyV').setAttribute('fill', target === 'V' ? '#f59e0b' : '#334155');
+            document.getElementById('triPolyI').setAttribute('fill', target === 'I' ? '#38bdf8' : '#334155');
+            document.getElementById('triTextI').setAttribute('fill', target === 'I' ? '#0f172a' : '#38bdf8');
+            document.getElementById('triPolyR').setAttribute('fill', target === 'R' ? '#fb7185' : '#334155');
+            document.getElementById('triTextR').setAttribute('fill', target === 'R' ? '#0f172a' : '#fb7185');
+
+            const display = document.getElementById('triangleFormulaDisplay');
+            if (target === 'V') {
+                display.innerHTML = `
+                    <div class="text-xs text-amber-400 font-heading uppercase">สูตรการหาแรงดันไฟฟ้า (Voltage)</div>
+                    <div class="text-3xl sm:text-4xl font-mono font-extrabold text-amber-400 my-2">V = I × R</div>
+                    <p class="text-slate-200 text-sm sm:text-base leading-relaxed">
+                        <strong>วิธีจำ:</strong> ปิดตัว <strong>V</strong> ด้านบน จะเห็น <strong>I</strong> กับ <strong>R</strong> อยู่บรรทัดเดียวกัน จึงนำมา<strong>คูณกัน</strong>
+                    </p>
+                    <div class="mt-3 pt-3 border-t border-slate-800 text-xs text-slate-300 font-mono">
+                        ตัวอย่าง: กระแสไหล 5 A ผ่านโหลด 44 Ω แรงดัน V = 5 × 44 = 220 V
+                    </div>`;
+            } else if (target === 'I') {
+                display.innerHTML = `
+                    <div class="text-xs text-sky-400 font-heading uppercase">สูตรการหากระแสไฟฟ้า (Current)</div>
+                    <div class="text-3xl sm:text-4xl font-mono font-extrabold text-sky-400 my-2">I = V ÷ R</div>
+                    <p class="text-slate-200 text-sm sm:text-base leading-relaxed">
+                        <strong>วิธีจำ:</strong> ปิดตัว <strong>I</strong> ด้านซ้ายล่าง จะเห็น <strong>V</strong> อยู่เหนือ <strong>R</strong> จึงนำแรงดันตั้งแล้ว<strong>หารด้วยความต้านทาน</strong>
+                    </p>
+                    <div class="mt-3 pt-3 border-t border-slate-800 text-xs text-slate-300 font-mono">
+                        ตัวอย่าง: แรงดันไฟบ้าน 220 V ต่อโหลด 44 Ω กระแส I = 220 ÷ 44 = 5 A
+                    </div>`;
+            } else {
+                display.innerHTML = `
+                    <div class="text-xs text-rose-400 font-heading uppercase">สูตรการหาความต้านทานไฟฟ้า (Resistance)</div>
+                    <div class="text-3xl sm:text-4xl font-mono font-extrabold text-rose-400 my-2">R = V ÷ I</div>
+                    <p class="text-slate-200 text-sm sm:text-base leading-relaxed">
+                        <strong>วิธีจำ:</strong> ปิดตัว <strong>R</strong> ด้านขวาล่าง จะเห็น <strong>V</strong> อยู่เหนือ <strong>I</strong> จึงนำแรงดันตั้งแล้ว<strong>หารด้วยกระแสไฟฟ้า</strong>
+                    </p>
+                    <div class="mt-3 pt-3 border-t border-slate-800 text-xs text-slate-300 font-mono">
+                        ตัวอย่าง: ไฟบ้าน 220 V มีกระแสไหล 5 A ความต้านทาน R = 220 ÷ 5 = 44 Ω
+                    </div>`;
+            }
+        }
+
+        // ==========================================
+        // MODULE 3: SAFETY SCENARIOS
+        // ==========================================
+        function setSafetyCase(caseNum) {
+            for (let i = 1; i <= 3; i++) {
+                const btn = document.getElementById(`safeBtn-${i}`);
+                if (i === caseNum) {
+                    const borderColor = i === 1 ? 'border-emerald-400' : (i === 2 ? 'border-amber-400' : 'border-rose-500');
+                    btn.className = `p-4 rounded-xl border-2 ${borderColor} bg-slate-800 text-left transition`;
+                } else {
+                    btn.className = "p-4 rounded-xl border border-slate-700 bg-slate-800/60 text-left transition";
+                }
+            }
+
+            const panel = document.getElementById('safetyResultPanel');
+            const formula = document.getElementById('safeCalcFormula');
+            const badge = document.getElementById('safeBreakerBadge');
+            const title = document.getElementById('safeCaseTitle');
+            const desc = document.getElementById('safeCaseDesc');
+
+            if (caseNum === 1) {
+                panel.className = "bg-slate-950 rounded-xl p-5 border border-emerald-500/40";
+                formula.className = "font-mono text-xl sm:text-2xl font-extrabold text-emerald-400";
+                formula.textContent = "I = 220V ÷ 44Ω = 5.0 A";
+                badge.className = "px-2.5 py-0.5 rounded-full text-xs font-heading font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40";
+                badge.textContent = "ON (จ่ายไฟปกติ)";
+                title.className = "font-heading font-bold text-base sm:text-lg text-emerald-400";
+                title.textContent = "สภาวะปกติ: สายไฟและอุปกรณ์ทำงานได้อย่างปลอดภัย";
+                desc.textContent = "ตัวต้านทานความร้อนในเตารีดมีค่า 44 Ω ช่วยจำกัดกระแสไฟฟ้าไว้ที่ 5 A ซึ่งต่ำกว่าพิกัดของสายไฟและเบรกเกอร์ (15 A) จึงใช้งานได้อย่างปลอดภัย";
+            } else if (caseNum === 2) {
+                panel.className = "bg-slate-950 rounded-xl p-5 border border-amber-500/50";
+                formula.className = "font-mono text-xl sm:text-2xl font-extrabold text-amber-400";
+                formula.textContent = "I = 220V ÷ 10Ω = 22.0 A";
+                badge.className = "px-2.5 py-0.5 rounded-full text-xs font-heading font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40";
+                badge.textContent = "TRIP! (ตัดไฟเนื่องจากโหลดเกิน)";
+                title.className = "font-heading font-bold text-base sm:text-lg text-amber-400";
+                title.textContent = "สภาวะโหลดเกินพิกัด (Overload): เสียบพ่วงเครื่องใช้ไฟฟ้ามากเกินไป!";
+                desc.textContent = "เมื่อเสียบเครื่องใช้ไฟฟ้าหลายชิ้นพ่วงในเต้ารับเดียว ความต้านทานรวม (R) จะลดลงเหลือ 10 Ω ส่งผลให้กระแสรวมพุ่งขึ้นเป็น 22 A เกินพิกัดสายไฟ 15 A สายไฟจะเริ่มร้อนและเบรกเกอร์จะทริปตัดไฟ";
+            } else {
+                panel.className = "bg-slate-950 rounded-xl p-5 border-2 border-rose-500";
+                formula.className = "font-mono text-xl sm:text-2xl font-extrabold text-rose-500";
+                formula.textContent = "I = 220V ÷ 0.5Ω = 440.0 A !!";
+                badge.className = "px-2.5 py-0.5 rounded-full text-xs font-heading font-bold bg-rose-500 text-white";
+                badge.textContent = "INSTANT TRIP! (ตัดทันทีป้องกันไฟไหม้)";
+                title.className = "font-heading font-bold text-base sm:text-lg text-rose-400";
+                title.textContent = "อันตรายร้ายแรง! ไฟฟ้าลัดวงจร (Short Circuit)";
+                desc.textContent = "เมื่อฉนวนสายไฟชำรุดจนสาย L และ N แตะกันโดยตรงโดยไม่ผ่านโหลด ค่า R จะเหลือเพียงความต้านทานของเส้นลวดทองแดง (เช่น 0.5 Ω) ทำให้กระแสพุ่งทะลุ 440 A ทันที เกิดประกายไฟระเบิดและเบรกเกอร์ต้องตัดภายในเสี้ยววินาที!";
+            }
+        }
+
+        // ==========================================
+        // MODULE 4: STEP-BY-STEP SOLVER & PRACTICE
+        // ==========================================
+        function setSolverMode(mode) {
+            currentSolverMode = mode;
+            ['I', 'V', 'R'].forEach(m => {
+                const btn = document.getElementById(`solverMode-${m}`);
+                if (m === mode) {
+                    btn.className = "py-2.5 px-3 rounded-xl font-heading font-bold text-xs sm:text-sm bg-amber-500 text-slate-950";
+                } else {
+                    btn.className = "py-2.5 px-3 rounded-xl font-heading font-bold text-xs sm:text-sm bg-slate-800 text-slate-300 border border-slate-700";
+                }
+            });
+
+            const lbl1 = document.getElementById('solverInput1Label');
+            const lbl2 = document.getElementById('solverInput2Label');
+            const inp1 = document.getElementById('solverInput1');
+            const inp2 = document.getElementById('solverInput2');
+
+            if (mode === 'I') {
+                lbl1.textContent = "ป้อนค่าแรงดันไฟฟ้า V (โวลต์):";
+                lbl2.textContent = "ป้อนค่าความต้านทาน R (โอห์ม):";
+                inp1.value = 220;
+                inp2.value = 55;
+            } else if (mode === 'V') {
+                lbl1.textContent = "ป้อนค่ากระแสไฟฟ้า I (แอมแปร์):";
+                lbl2.textContent = "ป้อนค่าความต้านทาน R (โอห์ม):";
+                inp1.value = 4;
+                inp2.value = 55;
+            } else {
+                lbl1.textContent = "ป้อนค่าแรงดันไฟฟ้า V (โวลต์):";
+                lbl2.textContent = "ป้อนค่ากระแสไฟฟ้า I (แอมแปร์):";
+                inp1.value = 220;
+                inp2.value = 4;
+            }
+            runSolverCalculation();
+        }
+
+        function runSolverCalculation() {
+            const val1 = parseFloat(document.getElementById('solverInput1').value) || 0;
+            const val2 = parseFloat(document.getElementById('solverInput2').value) || 0;
+            const out = document.getElementById('solverStepsOutput');
+
+            if (currentSolverMode === 'I') {
+                if (val2 <= 0) {
+                    out.innerHTML = `<div class="text-rose-400">ความต้านทาน (R) ต้องมากกว่า 0 โอห์ม</div>`;
+                    return;
+                }
+                const res = val1 / val2;
+                out.innerHTML = `
+                    <div class="text-slate-300">ขั้นที่ 1 (เลือกสูตร): <span class="text-amber-400 font-bold">I = V ÷ R</span></div>
+                    <div class="text-slate-300">ขั้นที่ 2 (แทนค่า): <span class="text-white">I = ${val1} ÷ ${val2}</span></div>
+                    <div class="text-emerald-400 text-base font-bold pt-1 border-t border-slate-800">คำตอบ: กระแสไฟฟ้า I = ${res.toFixed(2)} แอมแปร์ (A)</div>
+                `;
+            } else if (currentSolverMode === 'V') {
+                const res = val1 * val2;
+                out.innerHTML = `
+                    <div class="text-slate-300">ขั้นที่ 1 (เลือกสูตร): <span class="text-amber-400 font-bold">V = I × R</span></div>
+                    <div class="text-slate-300">ขั้นที่ 2 (แทนค่า): <span class="text-white">V = ${val1} × ${val2}</span></div>
+                    <div class="text-emerald-400 text-base font-bold pt-1 border-t border-slate-800">คำตอบ: แรงดันไฟฟ้า V = ${res.toFixed(2)} โวลต์ (V)</div>
+                `;
+            } else {
+                if (val2 <= 0) {
+                    out.innerHTML = `<div class="text-rose-400">กระแสไฟฟ้า (I) ต้องมากกว่า 0 แอมแปร์</div>`;
+                    return;
+                }
+                const res = val1 / val2;
+                out.innerHTML = `
+                    <div class="text-slate-300">ขั้นที่ 1 (เลือกสูตร): <span class="text-amber-400 font-bold">R = V ÷ I</span></div>
+                    <div class="text-slate-300">ขั้นที่ 2 (แทนค่า): <span class="text-white">R = ${val1} ÷ ${val2}</span></div>
+                    <div class="text-emerald-400 text-base font-bold pt-1 border-t border-slate-800">คำตอบ: ความต้านทาน R = ${res.toFixed(2)} โอห์ม (Ω)</div>
+                `;
+            }
+        }
+
+        function toggleSolution(id) {
+            document.getElementById(id).classList.toggle('hidden');
+        }
+
+        // ==========================================
+        // MODULE 5: 10-QUESTION ASSESSMENT ENGINE
+        // ==========================================
+        function renderQuiz() {
+            const container = document.getElementById('quizContainer');
+            container.innerHTML = '';
+
+            quizQuestions.forEach((q, idx) => {
+                const qCard = document.createElement('div');
+                qCard.id = `qCard-${q.id}`;
+                qCard.className = "p-4 sm:p-5 rounded-2xl border border-slate-200 bg-slate-50 transition";
+
+                let optionsHTML = '';
+                const thaiLabels = ['ก', 'ข', 'ค', 'ง'];
+                q.options.forEach((optText, optIdx) => {
+                    const isSelected = userAnswers[q.id] === optIdx;
+                    let btnClass = "w-full text-left p-3.5 rounded-xl border text-sm sm:text-base transition flex items-start space-x-3 ";
+
+                    if (!isQuizSubmitted) {
+                        btnClass += isSelected
+                            ? "border-2 border-amber-500 bg-amber-50 font-semibold text-slate-900"
+                            : "border-slate-200 bg-white hover:bg-slate-100 text-slate-700";
+                    } else {
+                        if (optIdx === q.correct) {
+                            btnClass += "border-2 border-emerald-500 bg-emerald-50 font-bold text-emerald-900";
+                        } else if (isSelected && optIdx !== q.correct) {
+                            btnClass += "border-2 border-rose-500 bg-rose-50 font-semibold text-rose-900";
+                        } else {
+                            btnClass += "border-slate-200 bg-white opacity-60 text-slate-600";
+                        }
+                    }
+
+                    optionsHTML += `
+                        <button onclick="selectAnswer(${q.id}, ${optIdx})" ${isQuizSubmitted ? 'disabled' : ''} class="${btnClass}">
+                            <span class="w-6 h-6 rounded-lg bg-slate-900 text-amber-400 font-heading text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">${thaiLabels[optIdx]}</span>
+                            <span class="flex-1">${optText}</span>
+                        </button>
+                    `;
+                });
+
+                let explanationHTML = '';
+                if (isQuizSubmitted) {
+                    const isRight = userAnswers[q.id] === q.correct;
+                    explanationHTML = `
+                        <div class="mt-4 p-3.5 rounded-xl ${isRight ? 'bg-emerald-100/70 border border-emerald-300 text-emerald-950' : 'bg-rose-100/70 border border-rose-300 text-rose-950'} text-xs sm:text-sm">
+                            <div class="font-heading font-bold mb-1">
+                                ${isRight ? '<i class="fa-solid fa-circle-check text-emerald-600 mr-1"></i> ตอบถูกต้อง!' : '<i class="fa-solid fa-circle-xmark text-rose-600 mr-1"></i> คำตอบยังไม่ถูกต้อง'}
+                            </div>
+                            <div><strong>คำอธิบายเชิงช่าง:</strong> ${q.explanation}</div>
+                        </div>
+                    `;
+                }
+
+                qCard.innerHTML = `
+                    <div class="flex items-center justify-between gap-2 mb-2">
+                        <span class="text-xs font-heading font-bold px-2.5 py-0.5 rounded bg-slate-900 text-amber-400">ข้อที่ ${idx + 1}</span>
+                        <span class="text-xs font-heading text-slate-500">${q.category}</span>
+                    </div>
+                    <h4 class="font-heading font-bold text-base sm:text-lg text-slate-900 mb-3.5 leading-snug">${q.question}</h4>
+                    <div class="space-y-2.5">
+                        ${optionsHTML}
+                    </div>
+                    ${explanationHTML}
+                `;
+
+                container.appendChild(qCard);
+            });
+
+            document.getElementById('quizAnsweredCount').textContent = Object.keys(userAnswers).length;
+        }
+
+        function selectAnswer(qId, optIdx) {
+            if (isQuizSubmitted) return;
+            userAnswers[qId] = optIdx;
+            document.getElementById('quizActionWarning').classList.add('hidden');
+            renderQuiz();
+        }
+
+        function submitQuiz() {
+            if (Object.keys(userAnswers).length < quizQuestions.length) {
+                const warn = document.getElementById('quizActionWarning');
+                warn.classList.remove('hidden');
+                return;
+            }
+
+            isQuizSubmitted = true;
+            renderQuiz();
+
+            // Calculate Score
+            let score = 0;
+            quizQuestions.forEach(q => {
+                if (userAnswers[q.id] === q.correct) score++;
+            });
+
+            // Populate Result Certificate
+            const nameInput = document.getElementById('studentName').value.trim() || "ไม่ได้ระบุชื่อ (นักเรียนช่างไฟฟ้า)";
+            const classInput = document.getElementById('studentClass').value.trim() || "-";
+            const noInput = document.getElementById('studentNo').value.trim() || "-";
+
+            document.getElementById('certName').textContent = nameInput;
+            document.getElementById('certClassNo').textContent = `ชั้น ${classInput} | เลขที่ ${noInput}`;
+            document.getElementById('certScore').textContent = score;
+
+            const now = new Date();
+            document.getElementById('certTimestamp').textContent = now.toLocaleString('th-TH');
+
+            const badge = document.getElementById('certBadge');
+            const feedback = document.getElementById('certFeedbackText');
+
+            if (score >= 7) {
+                badge.className = "px-3.5 py-1.5 rounded-full text-xs font-heading font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-400";
+                badge.textContent = "ผ่านเกณฑ์มาตรฐานช่างไฟฟ้า";
+                feedback.className = "text-xs text-emerald-400 font-heading mt-1";
+                feedback.textContent = score >= 9
+                    ? "ระดับนายช่างมืออาชีพ! เข้าใจทฤษฎีและการนำไปใช้จริงได้อย่างแม่นยำ"
+                    : "ผ่านเกณฑ์มาตรฐาน! มีความเข้าใจหลักการคำนวณและความปลอดภัยในงานช่าง";
+            } else {
+                badge.className = "px-3.5 py-1.5 rounded-full text-xs font-heading font-bold bg-rose-500/20 text-rose-300 border border-rose-400";
+                badge.textContent = "ยังไม่ผ่านเกณฑ์ (ต่ำกว่า 7 คะแนน)";
+                feedback.className = "text-xs text-amber-400 font-heading mt-1";
+                feedback.textContent = "แนะนำให้ทบทวนเฉลยด้านบนแล้วกดปุ่ม 'สอบแก้ตัวอีกครั้ง' เพื่อให้ผ่านเกณฑ์ 7 คะแนนครับ";
+            }
+
+            const resultCard = document.getElementById('quizResultCard');
+            resultCard.classList.remove('hidden');
+            resultCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function resetQuiz() {
+            userAnswers = {};
+            isQuizSubmitted = false;
+            document.getElementById('quizResultCard').classList.add('hidden');
+            document.getElementById('quizActionWarning').classList.add('hidden');
+            document.getElementById('copyToast').classList.add('hidden');
+            renderQuiz();
+        }
+
+        function copyResultSummary() {
+            const name = document.getElementById('certName').textContent;
+            const classNo = document.getElementById('certClassNo').textContent;
+            const score = document.getElementById('certScore').textContent;
+            const time = document.getElementById('certTimestamp').textContent;
+
+            const textToCopy = `[ส่งงานวิชางานช่างไฟฟ้า - กฎของโอห์ม]\nชื่อ: ${name}\n${classNo}\nคะแนนที่ได้: ${score} / 10 คะแนน\nเวลาที่ทำแบบทดสอบเสร็จ: ${time}`;
+
+            const tempArea = document.createElement('textarea');
+            tempArea.value = textToCopy;
+            document.body.appendChild(tempArea);
+            tempArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempArea);
+
+            const toast = document.getElementById('copyToast');
+            toast.classList.remove('hidden');
+        }
+
+        // Initialize on Window Load
+        window.onload = function() {
+            switchModule(1);
+            updateOhmLab();
+            runSolverCalculation();
+            renderQuiz();
+        };
+    </script>
+</body>
+</html>
